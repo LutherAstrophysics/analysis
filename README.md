@@ -14,3 +14,7 @@ from trout.greet import hello
 # Use
 hello()
 ```
+
+Please make sure that you do a git pull in the server's home folder
+where this pacakge is cloned to get new updates to the package
+reflected in our jupyter notebook.
