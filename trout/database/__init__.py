@@ -17,3 +17,18 @@ def connect(on_success):
         except Exception as e:
             print("connection can't be established")
             raise e
+
+
+def query(msg):
+    """
+    Run one line query to the database.
+    Raises exception if the query isn't successful
+
+    param msg: The query string
+    return: The result of the query 
+    """
+    def inner(cursor):
+        cursor.execute(msg)
+        return cursor.fetchall()
+
+    return connect(inner)
