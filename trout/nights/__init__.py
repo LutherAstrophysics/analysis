@@ -9,4 +9,6 @@ def bad_nights(limit:int=0):
     """
     if limit > 0: 
         return query(f"SELECT * FROM bad_nights LIMIT {limit}")
-    return query(f"SELECT * FROM bad_nights")
+
+    # Tuple used for enforcing immutabilty
+    return tuple(query(f"SELECT * FROM bad_nights"))

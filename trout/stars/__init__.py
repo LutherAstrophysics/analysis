@@ -1,33 +1,16 @@
-from trout.database import connect
+from .star import Star
+from .utils import get_star_data, is_valid_star, STAR_START, STAR_END
 
-STAR_START = 1
-STAR_END = 2510
-
-
-def is_valid_star(star_number: int):
-    return star_number >= STAR_START and star_number <= STAR_END
-
-
-def star_table_name(star_number: int):
-
-    # Only return if valid star_number provided
+def get_star(star_number : int) -> Star:
+    """
+    Creates and returns a Star object if the star_number is valid
+    """
     if is_valid_star(star_number):
-        return f"star_{star_number}_4px"
+        return Star(star_number)
 
-
-def get_star_data(star_number):
-    """
-    Gives the stars data from the database for a particular star.
-    param: star_number 
-    return: array of 3 tuple consiting (id, magnitude, date)
-    """
-
-    def inner(curs):
-        table = star_table_name(star_number)
-
-        # If the data is valid
-        if table:
-            curs.execute(f"SELECT * FROM {table}")
-            return curs.fetchall()
-
-    return connect(inner)
+__all__ = [
+        'STAR_START', 
+        'STAR_END', 
+        'get_star_data',
+        'get_star'
+        ]
