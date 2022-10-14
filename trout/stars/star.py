@@ -45,7 +45,7 @@ class Star:
 
     def peek(self):
         """
-        Take a look at first few items of the data
+        Take a look at first few items of the data.
         """
         return self._data[:5]
 
@@ -139,37 +139,43 @@ class Star:
     def plot(self, title=None):
         """
         Pots a scatter from the selected_data. If the selected_data is empty,
-        then the plot shall be empty.
+        then no plot will be drawn.
 
+        param: (optional) title: The title of the plot.
         return: None
         """
         flux_column, date_column = STAR_TABLE_HEADER['flux'], STAR_TABLE_HEADER['date'], 
         # Filter to remove data where flux <= 0
         data = list(filter(lambda x : x[flux_column] > 0, self.selected_data))
-        # Create np array of data
-        data = np.array(data)
-        flux, date = data[:, flux_column], data[:, date_column]
-        mags = list(map(flux_to_magnitude_4px, flux))
 
-        # Plot axis: (x, y) 
-        # Plot option: 'ro' means red circle for each datapoint
-        # Plot option: ms is for marker size
-        plt.plot(date, mags, 'ro', ms=2.5)
-        # Format Axis
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m')) 
-        plt.gcf().autofmt_xdate() # Fit date
-        plt.xlabel('Date')
-        plt.ylabel('Magnitude')
+        # Nothing to plot if there is no data.
+        if len(data) != 0:
+            # Create np array of data
+            data = np.array(data)
+            flux, date = data[:, flux_column], data[:, date_column]
+            mags = list(map(flux_to_magnitude_4px, flux))
 
-        # Set the size of figure to 10X5 inch
-        plt.rcParams["figure.figsize"] = (10,5)
+            # Plot axis: (x, y) 
+            # Plot option: 'ro' means red circle for each datapoint
+            # Plot option: ms is for marker size
+            plt.plot(date, mags, 'ro', ms=2.5)
+            # Format Axis
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m')) 
+            plt.gcf().autofmt_xdate() # Fit date
+            plt.xlabel('Date')
+            plt.ylabel('Magnitude')
+            # Invert the magnitude axis
+            plt.gca().invert_yaxis()
 
-        # Set title for the plot
-        if title:
-            plt.title(title)
-        else:
-            plt.title(self.__repr__())
-        plt.show()
+            # Set the size of figure to 10X5 inch
+            plt.rcParams["figure.figsize"] = (10,5)
+
+            # Set title for the plot
+            if title:
+                plt.title(title)
+            else:
+                plt.title(self.__repr__())
+            plt.show()
 
 
     def __str__(self):
