@@ -47,15 +47,17 @@ class Star:
         """
         return self._data[:5]
 
-    def select(self, filter_query="", exclude_bad_nights : bool=True):
+    def select(self, filter_query="", exclude_bad_nights : bool=True,
+            exclude_zeros : bool = True):
         """
         Filters a portion of the data to be used during plotting. Filtering is
         based on the the Postgresql syntax where filter_query is the string to
         use after there WHERE keyword
 
         param: filter_query: Filter to use
-        param: filter_bad_nights: Whether or not to filter bad nights, default
+        param: exclude_bad_nights: Whether or not to filter bad nights, default
                True
+        param: exclude_zeros: Whether or not to exclude nights with no data
         return: self
 
         Examples:
@@ -90,6 +92,10 @@ class Star:
             # Filter bad nights if necessary
             if exclude_bad_nights:
                 self.filter_bad_nights()
+
+            # Filter zero points if necessary
+            if exclude_bad_nights:
+                self.filter_zeros()
 
             return self
         except:
@@ -190,6 +196,15 @@ class Star:
         return : None
         """
         self._selected_data = bad_nights_filtered_data(self._selected_data)
+
+    def filter_zeros(self):
+        """
+        Filter zero points from selected_data. Note that this method doesn't
+        return anything but alters the value of self.selected_data
+
+        return : None
+        """
+        self._selected_data = list(filter(lambda x : x[1] > 0 ,self._selected_data))
 
     def __str__(self):
         return self
