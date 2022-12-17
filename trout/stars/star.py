@@ -30,10 +30,6 @@ class Star:
         self._selected_data = []
 
     @property
-    def data(self):
-        return self._data
-
-    @property
     def headers(self):
         return self._headers
 
@@ -199,4 +195,4 @@ class Star:
         return self
 
     def __repr__(self):
-        return f"Star: {self.number} Datapoints: {len(self.data)} Selected: {len(self.selected_data)}"
+        return f"Star: {self.number} Datapoints: {len(self._data)} Selected: {len(self.selected_data)}"
