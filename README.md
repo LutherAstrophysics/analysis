@@ -22,4 +22,6 @@ Please make sure that you do a git pull in the server's desktop folder
 where this pacakge is cloned to get new updates to the package
 reflected in our jupyter notebook. You might also have to restart the
 Jupyter notebook session (perhaps closing the tab and opening it again
-will do) once you make updates.
+will do) once you make updates. Or you might have to go *Shutdown* all
+running notebooks in the running tabs in the Jupyter Server and
+open the required notebook again.
