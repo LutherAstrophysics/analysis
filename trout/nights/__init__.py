@@ -1,3 +1,5 @@
+from functools import cache
+
 from trout.database import query
 
 @cache
