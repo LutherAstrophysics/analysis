@@ -6,8 +6,9 @@ from trout.constants import STAR_TABLE_HEADER
 from trout.conversions import flux_to_magnitude_4px
 from trout.database import query
 from trout.exceptions import InvalidStarNumberError, InvalidQueryError
-from trout.nights import bad_nights
 from trout.stars.utils import is_valid_star, star_table_name, get_star_data
+
+from .utils import bad_nights_filtered_data
 
 class Star:
     """
@@ -185,11 +186,7 @@ class Star:
 
         return : None
         """
-        # Using negative limit to ensure that all nights will be returned
-        # Map used to remove the index and only keep the dates
-        all_bad_nights = list(map(lambda x : x[1], bad_nights(limit=-1)))
-        self._selected_data = list(filter(lambda x : x[2] not in all_bad_nights,
-            self._selected_data))
+        self._selected_data = bad_nights_filtered_data(self._selected_data)
 
     def __str__(self):
         return self
