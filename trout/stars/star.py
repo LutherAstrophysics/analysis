@@ -187,7 +187,7 @@ class Star:
         """
         # Using negative limit to ensure that all nights will be returned
         # Map used to remove the index and only keep the dates
-        all_bad_nights = list(map(lambda x : x[1], bad_nighs(limit=-1)))
+        all_bad_nights = list(map(lambda x : x[1], bad_nights(limit=-1)))
         self._selected_data = list(filter(lambda x : x[2] not in all_bad_nights,
             self._selected_data))
 
