@@ -51,13 +51,15 @@ class Star:
         """
         return self._data[:5]
 
-    def select(self, filter_query=""):
+    def select(self, filter_query="", exclude_bad_nights : bool=True):
         """
         Filters a portion of the data to be used during plotting. Filtering is
         based on the the Postgresql syntax where filter_query is the string to
         use after there WHERE keyword
 
         param: filter_query: Filter to use
+        param: filter_bad_nights: Whether or not to filter bad nights, default
+               True
         return: self
 
         Examples:
@@ -88,6 +90,11 @@ class Star:
                 # Reset when called without filter_query or a False(y) value
                 # like the empty string
                 self._selected_data = query(f"SELECT * FROM {table}")
+
+            # Filter bad nights if necessary
+            if exclude_bad_nights:
+                self.filter_bad_nights()
+
             return self
         except:
             raise InvalidQueryError
