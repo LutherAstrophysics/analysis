@@ -15,6 +15,8 @@ from trout.greet import hello
 hello()
 ```
 
-Please make sure that you do a git pull in the server's home folder
+Please make sure that you do a git pull in the server's desktop folder
 where this pacakge is cloned to get new updates to the package
-reflected in our jupyter notebook.
+reflected in our jupyter notebook. You might also have to restart the
+Jupyter notebook session (perhaps closing the tab and opening it again
+will do) once you make updates.
