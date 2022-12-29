@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 
+from trout.color import get_color
 from trout.constants import STAR_TABLE_HEADER
 from trout.conversions import flux_to_magnitude_4px
 from trout.database import query
@@ -25,12 +26,21 @@ class Star:
         self._data = get_star_data(number)
         self._table = star_table_name(self.number)
 
+        # Get the color of the star
+        self._color = get_color(number)
+
+        self._table = star_table_name(self.number)
+
         # Headers match the column names in the database
         # These are the column names to use to filter data
         self._headers = list(map(lambda x : x[0],
             sorted(STAR_TABLE_HEADER.items(), key=lambda x : x[1])))
 
         self._selected_data = []
+
+    @property
+    def color(self):
+        return self._color
 
     @property
     def headers(self):
