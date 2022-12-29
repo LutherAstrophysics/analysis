@@ -1,3 +1,5 @@
+from typing import Union
+
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
@@ -21,6 +23,7 @@ class Star:
             raise InvalidStarNumberError
         self._number = number
         self._data = get_star_data(number)
+        self._table = star_table_name(self.number)
 
         # Headers match the column names in the database
         # These are the column names to use to filter data
@@ -80,14 +83,13 @@ class Star:
         any parameters
         """
         try:
-            table = star_table_name(self.number)
             if filter_query:
                 # Tuple used for enforcing immutabilty
-                self._selected_data = tuple(query(f"SELECT * FROM {table} WHERE {filter_query}"))
+                self._selected_data = tuple(query(f"SELECT * FROM {self._table} WHERE {filter_query}"))
             else:
                 # Reset when called without filter_query or a False(y) value
                 # like the empty string
-                self._selected_data = query(f"SELECT * FROM {table}")
+                self._selected_data = query(f"SELECT * FROM {self._table}")
 
             # Filter bad nights if necessary
             if exclude_bad_nights:
@@ -188,6 +190,36 @@ class Star:
                 plt.title(self.__repr__())
             plt.show()
 
+    def attendance(self, year : Union[int, None] = None, print_stats=False) -> float:
+        """
+        Calcualtes the attendance % of the star. The attendace is calculated 
+        after removing the bad nights.
+
+        param: (optional) year for which to calculate attendance. Default to all
+                years
+        return: the attendance percentage in given year or the entire period 
+        """
+        if year is None:
+            data = query(f"SELECT * FROM {self._table}")
+        elif type(year) != int:
+            raise ValueError("Invalid year value")
+        else:
+            data = query(f"SELECT * FROM {self._table} where date >= '{year}-01-01' and date < '{year + 1}-01-01'")
+        data_points = len(data)
+        # Filter bad nights
+        data = bad_nights_filtered_data(data)
+        data_points_bad_nights_removed = len(data)
+        # Data after removing zeros (nights where star is absent)
+        data_cleaned = list(filter(lambda x : x[1] > 0, data))
+        if print_stats:
+            print(f"Data points: {data_points}")
+            print(f"Data points (excluding bad nights): {data_points_bad_nights_removed}")
+            print(f"Attended nights (without bad nights): {len(data_cleaned)}")
+        if data_points == 0:
+            raise ValueError(f"Year {year} doesnt exist")
+        return  len(data_cleaned) / data_points_bad_nights_removed 
+
+
     def filter_bad_nights(self):
         """
         Filter bad nights from selected_data. Note that this method doesn't
@@ -204,7 +236,7 @@ class Star:
 
         return : None
         """
-        self._selected_data = list(filter(lambda x : x[1] > 0 ,self._selected_data))
+        self._selected_data = list(filter(lambda x : x[1] > 0, self._selected_data))
 
     def __str__(self):
         return self
