@@ -6,7 +6,7 @@ def connect(on_success):
     Connect to our stars data internal database
 
     param on_success: unary function to be called if the connection is
-    successful with ther cursor object
+    successful with the cursor object
     return: the result of calling on_success
     """
     conn = psycopg2.connect(

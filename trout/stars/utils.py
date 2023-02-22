@@ -20,19 +20,20 @@ def get_star_data(star_number: int):
     Gives the stars data from the database for a particular star.
     This function filters out any bad nights in the data.
     param: star_number
-    return: tuple of 3 tuple consiting (id, magnitude, date)
+    return: tuple of 3 tuple consisting (id, magnitude, date)
     """
 
     table = star_table_name(star_number)
 
     if table:
-        # Tuple used for enforcing immutabilty
+        # Tuple used for enforcing immutability
         return bad_nights_filtered_data(tuple(query(f"SELECT * FROM {table}")))
 
 
 def bad_nights_filtered_data(data):
     """
-    Returns the list of datapoints after filtering bad nights data in given data
+    Returns the list of data points after filtering bad nights data in given
+    data
     """
     # Using negative limit to ensure that all nights will be returned
     # Map used to remove the index and only keep the dates

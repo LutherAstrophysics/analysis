@@ -1,16 +1,16 @@
-from typing import Union, Iterable
+from datetime import date
+from typing import Iterable, Union
 
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import numpy as np
 
 from trout.color import get_color
 from trout.constants import STAR_TABLE_HEADER
 from trout.conversions import flux_to_magnitude_4px
 from trout.database import query
-from trout.exceptions import InvalidStarNumberError, InvalidQueryError
-from trout.stars.utils import is_valid_star, star_table_name, get_star_data
-from datetime import date
+from trout.exceptions import InvalidQueryError, InvalidStarNumberError
+from trout.stars.utils import get_star_data, is_valid_star, star_table_name
 
 from .utils import bad_nights_filtered_data
 
@@ -82,17 +82,17 @@ class Star:
 
         Examples:
 
-        x.select("date > '2005-01-01'") selects only those datapoints past
+        x.select("date > '2005-01-01'") selects only those data points past
         2005-01-01.
 
         x.select("date > '2005-01-01' and date <= '2015-05-05'") selects only
-        those datapoints after 2005-01-01 and before 2015-05-06.
+        those data points after 2005-01-01 and before 2015-05-06.
 
-        x.select("flux > 1650000") selects only those datapoints with flux
+        x.select("flux > 1650000") selects only those data points with flux
         greater than 165000
 
         Or you could even combine the flux and the date together like:
-        x.selecte("flux > 1700000 and date < '2010-01-01'")
+        x.select("flux > 1700000 and date < '2010-01-01'")
 
         Note that x is the Star object in these examples
 
@@ -119,7 +119,7 @@ class Star:
                 self.filter_zeros()
 
             return self
-        except:
+        except Exception:
             raise InvalidQueryError
 
     def transform_selected(
@@ -133,15 +133,16 @@ class Star:
 
         param: flux_transformation_fn: Function that takes old data (tuple of
             id, flux value and date) and returns new flux value.
-            Its default value is identify function in the sense that it leaves the
-            flux value unaltered. Technically it is a function that take a tuple and
-            returns item in the second position (which is where flux is stored)
+            Its default value is identify function in the sense that it leaves
+            the flux value unaltered. Technically it is a function that take a
+            tuple and returns item in the second position (which is where flux
+            is stored)
         return: the transformed dataset
 
         Examples:
-        Say you want to double the magnitude of all datapoints taken before 2009
-        feb and keep the magnitude of other datapoints intact, you would then write
-        your transformation function first
+        Say you want to double the magnitude of all data points taken before
+        2009 feb and keep the magnitude of other data points intact, you would
+        then write your transformation function first
 
         def transform(data):
             # Break the tuple
@@ -158,15 +159,15 @@ class Star:
 
         x.transform_selected(transform)
 
-        Note that the transformation is done in the x.selected_data so if that's
+        Note that the transformation is done in the x.selected_data so if thats
         not set your result of transformation will also be empty.
         """
         transformed_data = []
-        for index, data in enumerate(self.selected_data):
-            sn, flux_o, date = data
+        for _, data in enumerate(self.selected_data):
+            sn, _, date = data
             transformed_data.append((sn, flux_transformation_fn(data), date))
         # Update _selected_data
-        # Tuple used for enforcing immutabilty
+        # Tuple used for enforcing immutability
         self._selected_data = tuple(transformed_data)
 
     def plot(self, title=None):
@@ -192,7 +193,7 @@ class Star:
             mags = list(map(flux_to_magnitude_4px, flux))
 
             # Plot axis: (x, y)
-            # Plot option: 'ro' means red circle for each datapoint
+            # Plot option: 'ro' means red circle for each data point
             # Plot option: ms is for marker size
             plt.plot(date, mags, "ro", ms=2.5)
             # Format Axis
@@ -213,13 +214,15 @@ class Star:
                 plt.title(self.__repr__())
             plt.show()
 
-    def attendance(self, year: Union[int, None] = None, print_stats=False) -> float:
+    def attendance(
+        self, year: Union[int, None] = None, print_stats=False
+    ) -> float:  # noqa 501
         """
-        Calcualtes the attendance % of the star. The attendace is calculated
+        Calculates the attendance % of the star. The attendance is calculated
         after removing the bad nights.
 
-        param: (optional) year for which to calculate attendance. Default to all
-                years
+        param: (optional) year for which to calculate attendance. Default to
+                all years
         return: the attendance percentage in given year or the entire period
         """
         if year is None:
@@ -228,7 +231,7 @@ class Star:
             raise ValueError("Invalid year value")
         else:
             data = query(
-                f"SELECT * FROM {self._table} where date >= '{year}-01-01' and date < '{year + 1}-01-01'"
+                f"SELECT * FROM {self._table} where date >= '{year}-01-01' and date < '{year + 1}-01-01'"  # noqa 501
             )
         data_points = len(data)
         # Filter bad nights
@@ -243,7 +246,7 @@ class Star:
             )
             print(f"Attended nights (without bad nights): {len(data_cleaned)}")
         if data_points == 0:
-            raise ValueError(f"Year {year} doesnt exist")
+            raise ValueError(f"Year {year} doesn't exist")
         return len(data_cleaned) / data_points_bad_nights_removed
 
     def filter_bad_nights(self):
@@ -286,4 +289,4 @@ class Star:
         return self
 
     def __repr__(self):
-        return f"Star: {self.number} Datapoints: {len(self._data)} Selected: {len(self.selected_data)}"
+        return f"Star: {self.number} Datapoints: {len(self._data)} Selected: {len(self.selected_data)}" # noqa 501

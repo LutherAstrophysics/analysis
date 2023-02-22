@@ -7,5 +7,19 @@
       "source.organizeImports": true
     }
   },
-  "python.linting.enabled": true
+  "python.linting.enabled": true,
+  "cSpell.words": [
+    "autofmt",
+    "Datapoints",
+    "figsize",
+    "matplotlib",
+    "mdates",
+    "mysecretpassword",
+    "psycopg",
+    "pyplot",
+    "xaxis",
+    "xlabel",
+    "yaxis",
+    "ylabel"
+  ]
 }
