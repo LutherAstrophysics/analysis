@@ -66,8 +66,7 @@ class Star:
     def select(
         self,
         filter_query="",
-        exclude_bad_nights: bool = True,
-        exclude_zeros: bool = True,
+        **kwargs
     ):
         """
         Filters a portion of the data to be used during plotting. Filtering is
@@ -75,9 +74,10 @@ class Star:
         use after there WHERE keyword
 
         param: filter_query: Filter to use
-        param: exclude_bad_nights: Whether or not to filter bad nights, default
-               True
-        param: exclude_zeros: Whether or not to exclude nights with no data
+        param: exclude_bad_nights (optional kwarg): 
+               Whether or not to filter out bad nights, default True
+        param: exclude_zeros (optional kwarg): 
+               Whether or not to exclude nights with no data
         return: self
 
         Examples:
@@ -99,6 +99,8 @@ class Star:
         To reset the selection to all data, you may call this function without
         any parameters
         """
+        exclude_bad_nights = kwargs.get("exclude_bad_nights", True)
+        exclude_zeros = kwargs.get("exclude_zeros", True)
         try:
             if filter_query:
                 # Tuple used to enforce immutability
@@ -115,12 +117,40 @@ class Star:
                 self.filter_bad_nights()
 
             # Filter zero points if necessary
-            if exclude_bad_nights:
+            if exclude_zeros:
                 self.filter_zeros()
 
             return self
         except Exception:
             raise InvalidQueryError
+    
+    def select_year(self, year : int, **kwargs):
+        """
+        Works the same way as select method does except that this doesn't
+        take a filter query instead selects all the data in the given year.
+        Note that the you can specify if you want to ignore the zero value
+        nights and badnights.
+
+        param: year: Year to select data from
+        param (optional kwarg): exclude_bad_nights: whether to exclude bad nights
+        param (optional kwarg): exclude_zeros: whether to exclude zero fluxes
+        return: self
+
+        Example:
+
+            # Selects the star data on 2021
+            # Zero values and bad nights are handled just the way they would be handled
+            # by select method when not specified
+            some_star.select_year(2021)
+
+            # Selects the star data on 2020 including bad nights data
+            some_star.select_year(2021, exclude_bad_nights=False)
+
+            # Selects the star data on 2020 including bad nights data as well as zero value
+            some_star.select_year(2021, exclude_bad_nights=False, exclude_zeros=False)
+        """
+        return self.select(f"date >= '{year}-01-01' and date < '{year + 1}-01-01'", **kwargs)
+    
 
     def transform_selected(
         self, flux_transformation_fn=lambda x: x[STAR_TABLE_HEADER["flux"]]
@@ -284,6 +314,46 @@ class Star:
         if data := self._selected_data:
             return np.array(np.array(data)[:, 2])
         return np.array([])
+    
+    def step(self, from_year:int, to_year: int) -> float:
+        """
+        Returns the ratio of mean flux in `to_year` to `from_year`.
+        Note that this excludes bad nights.
+        """
+        # Note that we need to save the currently selected data
+        # so that we can set this back to what it was after making intermediate calculations
+        starting_selected_data = self._selected_data
+        self.select_year(from_year, exclude_zeros=True, exclude_bad_nights=True)
+        from_year_mean = self.mean()
+        self.select_year(to_year, exclude_zeros=True, exclude_bad_nights=True)
+        to_year_mean = self.mean()
+        # We change the value of selected data to what it previously  was
+        self._selected_data = starting_selected_data
+        return to_year_mean / from_year_mean
+    
+    def mean(self) -> float:
+        """
+        Returns the mean value of selected_data
+        """
+        return np.mean(self.get_selected_data_column())
+
+    def median(self) -> float:
+        """
+        Returns the median value of selected_data
+        """
+        return np.median(self.get_selected_data_column())
+
+    def min(self) -> float:
+        """
+        Returns the min value of selected_data
+        """
+        return np.min(self.get_selected_data_column())
+
+    def max(self) -> float:
+        """
+        Returns the max value of selected_data
+        """
+        return np.max(self.get_selected_data_column())
 
     def __str__(self):
         return self
