@@ -1,6 +1,7 @@
 from datetime import date
 from functools import cache
 from typing import Iterable
+
 from trout.stars import get_star
 
 
