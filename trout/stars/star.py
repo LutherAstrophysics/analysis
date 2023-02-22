@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Iterable
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -10,6 +10,7 @@ from trout.conversions import flux_to_magnitude_4px
 from trout.database import query
 from trout.exceptions import InvalidStarNumberError, InvalidQueryError
 from trout.stars.utils import is_valid_star, star_table_name, get_star_data
+from datetime import date
 
 from .utils import bad_nights_filtered_data
 
@@ -94,7 +95,7 @@ class Star:
         """
         try:
             if filter_query:
-                # Tuple used for enforcing immutabilty
+                # Tuple used to enforce immutability
                 self._selected_data = tuple(query(f"SELECT * FROM {self._table} WHERE {filter_query}"))
             else:
                 # Reset when called without filter_query or a False(y) value
@@ -247,6 +248,24 @@ class Star:
         return : None
         """
         self._selected_data = list(filter(lambda x : x[1] > 0, self._selected_data))
+
+    def get_selected_data_column(self) -> Iterable[float]:
+        """
+        Returns an numpy array of selected data if there's some
+        selected data
+        """
+        if data := self._selected_data:
+            return np.array(np.array(data)[:, 1])
+        return np.array([])
+
+    def get_selected_dates_column(self) -> Iterable[date]:
+        """
+        Returns an numpy array of date from selected data if there's some
+        selected data
+        """
+        if data := self._selected_data:
+            return np.array(np.array(data)[:, 2])
+        return np.array([])
 
     def __str__(self):
         return self

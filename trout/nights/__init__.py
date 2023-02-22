@@ -17,3 +17,4 @@ def bad_nights(limit:int=0):
 
     # Tuple used for enforcing immutabilty
     return tuple(query(f"SELECT * FROM bad_nights"))
+
