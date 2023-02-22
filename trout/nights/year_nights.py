@@ -3,6 +3,7 @@ from functools import cache
 from typing import Iterable
 from trout.stars import get_star
 
+
 @cache
 def get_nights_in_a_year(year: int) -> Iterable[date]:
     """

@@ -1,5 +1,6 @@
 import psycopg2
 
+
 def connect(on_success):
     """
     Connect to our stars data internal database
@@ -8,11 +9,17 @@ def connect(on_success):
     successful with ther cursor object
     return: the result of calling on_success
     """
-    conn = psycopg2.connect( dbname="postgres", user="reader", password="mysecretpassword", port=5433, host="localhost") 
+    conn = psycopg2.connect(
+        dbname="postgres",
+        user="reader",
+        password="mysecretpassword",
+        port=5433,
+        host="localhost",
+    )
     with conn.cursor() as curs:
-        try: 
+        try:
             # Go to the appropriate search_path
-            curs.execute("SET search_path TO api;") 
+            curs.execute("SET search_path TO api;")
             return on_success(curs)
         except Exception as e:
             print("connection can't be established")
@@ -25,8 +32,9 @@ def query(msg):
     Raises exception if the query isn't successful
 
     param msg: The query string
-    return: The result of the query 
+    return: The result of the query
     """
+
     def inner(cursor):
         cursor.execute(msg)
         return cursor.fetchall()

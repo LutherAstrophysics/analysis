@@ -14,10 +14,11 @@ from datetime import date
 
 from .utils import bad_nights_filtered_data
 
+
 class Star:
     """
     A star object, useful for viewing data for the star, advanced filtering of
-    data and drawing scatter plot of the data. 
+    data and drawing scatter plot of the data.
     """
 
     def __init__(self, number: int):
@@ -34,8 +35,9 @@ class Star:
 
         # Headers match the column names in the database
         # These are the column names to use to filter data
-        self._headers = list(map(lambda x : x[0],
-            sorted(STAR_TABLE_HEADER.items(), key=lambda x : x[1])))
+        self._headers = list(
+            map(lambda x: x[0], sorted(STAR_TABLE_HEADER.items(), key=lambda x: x[1]))
+        )
 
         self._selected_data = []
 
@@ -50,7 +52,7 @@ class Star:
     @property
     def number(self):
         return self._number
-    
+
     @property
     def selected_data(self):
         return self._selected_data
@@ -61,8 +63,12 @@ class Star:
         """
         return self._data[:5]
 
-    def select(self, filter_query="", exclude_bad_nights : bool=True,
-            exclude_zeros : bool = True):
+    def select(
+        self,
+        filter_query="",
+        exclude_bad_nights: bool = True,
+        exclude_zeros: bool = True,
+    ):
         """
         Filters a portion of the data to be used during plotting. Filtering is
         based on the the Postgresql syntax where filter_query is the string to
@@ -96,7 +102,9 @@ class Star:
         try:
             if filter_query:
                 # Tuple used to enforce immutability
-                self._selected_data = tuple(query(f"SELECT * FROM {self._table} WHERE {filter_query}"))
+                self._selected_data = tuple(
+                    query(f"SELECT * FROM {self._table} WHERE {filter_query}")
+                )
             else:
                 # Reset when called without filter_query or a False(y) value
                 # like the empty string
@@ -113,18 +121,19 @@ class Star:
             return self
         except:
             raise InvalidQueryError
-    
-    def transform_selected(self, flux_transformation_fn = lambda x :
-            x[STAR_TABLE_HEADER['flux']]):
+
+    def transform_selected(
+        self, flux_transformation_fn=lambda x: x[STAR_TABLE_HEADER["flux"]]
+    ):
         """
         Transform the flux with some transformation function provided.
-        Note that this ony alters the selected_data field. 
+        Note that this ony alters the selected_data field.
         If you want to reset the data, just call the select method without any
         parameters.
 
         param: flux_transformation_fn: Function that takes old data (tuple of
-            id, flux value and date) and returns new flux value. 
-            Its default value is identify function in the sense that it leaves the 
+            id, flux value and date) and returns new flux value.
+            Its default value is identify function in the sense that it leaves the
             flux value unaltered. Technically it is a function that take a tuple and
             returns item in the second position (which is where flux is stored)
         return: the transformed dataset
@@ -168,9 +177,12 @@ class Star:
         param: (optional) title: The title of the plot.
         return: None
         """
-        flux_column, date_column = STAR_TABLE_HEADER['flux'], STAR_TABLE_HEADER['date'], 
+        flux_column, date_column = (
+            STAR_TABLE_HEADER["flux"],
+            STAR_TABLE_HEADER["date"],
+        )
         # Filter to remove data where flux <= 0
-        data = list(filter(lambda x : x[flux_column] > 0, self.selected_data))
+        data = list(filter(lambda x: x[flux_column] > 0, self.selected_data))
 
         # Nothing to plot if there is no data.
         if len(data) != 0:
@@ -179,20 +191,20 @@ class Star:
             flux, date = data[:, flux_column], data[:, date_column]
             mags = list(map(flux_to_magnitude_4px, flux))
 
-            # Plot axis: (x, y) 
+            # Plot axis: (x, y)
             # Plot option: 'ro' means red circle for each datapoint
             # Plot option: ms is for marker size
-            plt.plot(date, mags, 'ro', ms=2.5)
+            plt.plot(date, mags, "ro", ms=2.5)
             # Format Axis
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m')) 
-            plt.gcf().autofmt_xdate() # Fit date
-            plt.xlabel('Date')
-            plt.ylabel('Magnitude')
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+            plt.gcf().autofmt_xdate()  # Fit date
+            plt.xlabel("Date")
+            plt.ylabel("Magnitude")
             # Invert the magnitude axis
             plt.gca().invert_yaxis()
 
             # Set the size of figure to 10X5 inch
-            plt.rcParams["figure.figsize"] = (10,5)
+            plt.rcParams["figure.figsize"] = (10, 5)
 
             # Set title for the plot
             if title:
@@ -201,35 +213,38 @@ class Star:
                 plt.title(self.__repr__())
             plt.show()
 
-    def attendance(self, year : Union[int, None] = None, print_stats=False) -> float:
+    def attendance(self, year: Union[int, None] = None, print_stats=False) -> float:
         """
-        Calcualtes the attendance % of the star. The attendace is calculated 
+        Calcualtes the attendance % of the star. The attendace is calculated
         after removing the bad nights.
 
         param: (optional) year for which to calculate attendance. Default to all
                 years
-        return: the attendance percentage in given year or the entire period 
+        return: the attendance percentage in given year or the entire period
         """
         if year is None:
             data = query(f"SELECT * FROM {self._table}")
         elif type(year) != int:
             raise ValueError("Invalid year value")
         else:
-            data = query(f"SELECT * FROM {self._table} where date >= '{year}-01-01' and date < '{year + 1}-01-01'")
+            data = query(
+                f"SELECT * FROM {self._table} where date >= '{year}-01-01' and date < '{year + 1}-01-01'"
+            )
         data_points = len(data)
         # Filter bad nights
         data = bad_nights_filtered_data(data)
         data_points_bad_nights_removed = len(data)
         # Data after removing zeros (nights where star is absent)
-        data_cleaned = list(filter(lambda x : x[1] > 0, data))
+        data_cleaned = list(filter(lambda x: x[1] > 0, data))
         if print_stats:
             print(f"Data points: {data_points}")
-            print(f"Data points (excluding bad nights): {data_points_bad_nights_removed}")
+            print(
+                f"Data points (excluding bad nights): {data_points_bad_nights_removed}"
+            )
             print(f"Attended nights (without bad nights): {len(data_cleaned)}")
         if data_points == 0:
             raise ValueError(f"Year {year} doesnt exist")
-        return  len(data_cleaned) / data_points_bad_nights_removed 
-
+        return len(data_cleaned) / data_points_bad_nights_removed
 
     def filter_bad_nights(self):
         """
@@ -247,7 +262,7 @@ class Star:
 
         return : None
         """
-        self._selected_data = list(filter(lambda x : x[1] > 0, self._selected_data))
+        self._selected_data = list(filter(lambda x: x[1] > 0, self._selected_data))
 
     def get_selected_data_column(self) -> Iterable[float]:
         """
