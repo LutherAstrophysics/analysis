@@ -18,7 +18,7 @@ def star_table_name(star_number: int, is_primary: bool = True):
             return f"star_{star_number}_4px_exp"
 
 
-def get_star_data(star_number: int):
+def get_star_data(star_number: int, is_primary: bool):
     """
     Gives the stars data from the database for a particular star.
     This function filters out any bad nights in the data.
@@ -30,7 +30,9 @@ def get_star_data(star_number: int):
 
     if table:
         # Tuple used for enforcing immutability
-        return bad_nights_filtered_data(tuple(query(f"SELECT * FROM {table}")))
+        return bad_nights_filtered_data(
+            tuple(query(f"SELECT * FROM {table}")), is_primary
+        )
 
 
 def bad_nights_filtered_data(data, is_primary: bool):

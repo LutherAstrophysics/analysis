@@ -25,7 +25,7 @@ class Star:
         if not is_valid_star(number):
             raise InvalidStarNumberError
         self._number = number
-        self._data = get_star_data(number)
+        self._data = get_star_data(number, is_primary)
         self._table = star_table_name(self.number, is_primary)
         self._is_primary = is_primary
 
