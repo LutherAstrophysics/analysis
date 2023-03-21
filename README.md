@@ -58,6 +58,9 @@ bad_nights_secondary = bad_nights(is_primary=False) # All bad nights in secondar
 bad_nights_secondary_peek = bad_nights(10, is_primary=False) # First 10 bad nights in secondary data source
 ```
 
+Some examples of data analysis can be found here:
+<https://github.com/LutherAstrophysics/suman-analysis>
+
 
 ## Updating
 
