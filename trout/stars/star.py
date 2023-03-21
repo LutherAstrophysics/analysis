@@ -21,17 +21,16 @@ class Star:
     data and drawing scatter plot of the data.
     """
 
-    def __init__(self, number: int):
+    def __init__(self, number: int, is_primary: bool = True):
         if not is_valid_star(number):
             raise InvalidStarNumberError
         self._number = number
         self._data = get_star_data(number)
-        self._table = star_table_name(self.number)
+        self._table = star_table_name(self.number, is_primary)
+        self._is_primary = is_primary
 
         # Get the color of the star
         self._color = get_color(number)
-
-        self._table = star_table_name(self.number)
 
         # Headers match the column names in the database
         # These are the column names to use to filter data
@@ -63,20 +62,16 @@ class Star:
         """
         return self._data[:5]
 
-    def select(
-        self,
-        filter_query="",
-        **kwargs
-    ):
+    def select(self, filter_query="", **kwargs):
         """
         Filters a portion of the data to be used during plotting. Filtering is
         based on the the Postgresql syntax where filter_query is the string to
         use after there WHERE keyword
 
         param: filter_query: Filter to use
-        param: exclude_bad_nights (optional kwarg): 
+        param: exclude_bad_nights (optional kwarg):
                Whether or not to filter out bad nights, default True
-        param: exclude_zeros (optional kwarg): 
+        param: exclude_zeros (optional kwarg):
                Whether or not to exclude nights with no data
         return: self
 
@@ -123,8 +118,8 @@ class Star:
             return self
         except Exception:
             raise InvalidQueryError
-    
-    def select_year(self, year : int, **kwargs):
+
+    def select_year(self, year: int, **kwargs):
         """
         Works the same way as select method does except that this doesn't
         take a filter query instead selects all the data in the given year.
@@ -149,8 +144,9 @@ class Star:
             # Selects the star data on 2020 including bad nights data as well as zero value
             some_star.select_year(2021, exclude_bad_nights=False, exclude_zeros=False)
         """
-        return self.select(f"date >= '{year}-01-01' and date < '{year + 1}-01-01'", **kwargs)
-    
+        return self.select(
+            f"date >= '{year}-01-01' and date < '{year + 1}-01-01'", **kwargs
+        )
 
     def transform_selected(
         self, flux_transformation_fn=lambda x: x[STAR_TABLE_HEADER["flux"]]
@@ -286,7 +282,9 @@ class Star:
 
         return : None
         """
-        self._selected_data = bad_nights_filtered_data(self._selected_data)
+        self._selected_data = bad_nights_filtered_data(
+            self._selected_data, self._is_primary
+        )
 
     def filter_zeros(self):
         """
@@ -314,8 +312,8 @@ class Star:
         if data := self._selected_data:
             return np.array(np.array(data)[:, 2])
         return np.array([])
-    
-    def step(self, from_year:int, to_year: int) -> float:
+
+    def step(self, from_year: int, to_year: int) -> float:
         """
         Returns the ratio of mean flux in `to_year` to `from_year`.
         Note that this excludes bad nights.
@@ -330,7 +328,7 @@ class Star:
         # We change the value of selected data to what it previously  was
         self._selected_data = starting_selected_data
         return to_year_mean / from_year_mean
-    
+
     def mean(self) -> float:
         """
         Returns the mean value of selected_data
@@ -359,4 +357,4 @@ class Star:
         return self
 
     def __repr__(self):
-        return f"Star: {self.number} Datapoints: {len(self._data)} Selected: {len(self.selected_data)}" # noqa 501
+        return f"Star: {self.number} Datapoints: {len(self._data)} Selected: {len(self.selected_data)}"  # noqa 501

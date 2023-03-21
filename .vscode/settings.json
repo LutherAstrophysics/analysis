@@ -10,6 +10,7 @@
   "python.linting.enabled": true,
   "cSpell.words": [
     "autofmt",
+    "badnights",
     "Datapoints",
     "figsize",
     "matplotlib",

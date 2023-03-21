@@ -9,10 +9,13 @@ def is_valid_star(star_number: int):
     return star_number >= STAR_START and star_number <= STAR_END
 
 
-def star_table_name(star_number: int):
+def star_table_name(star_number: int, is_primary: bool = True):
     # Only return if valid star_number provided
     if is_valid_star(star_number):
-        return f"star_{star_number}_4px"
+        if is_primary:
+            return f"star_{star_number}_4px"
+        else:
+            return f"star_{star_number}_4px_exp"
 
 
 def get_star_data(star_number: int):
@@ -30,12 +33,12 @@ def get_star_data(star_number: int):
         return bad_nights_filtered_data(tuple(query(f"SELECT * FROM {table}")))
 
 
-def bad_nights_filtered_data(data):
+def bad_nights_filtered_data(data, is_primary: bool):
     """
     Returns the list of data points after filtering bad nights data in given
     data
     """
     # Using negative limit to ensure that all nights will be returned
     # Map used to remove the index and only keep the dates
-    all_bad_nights = list(map(lambda x: x[1], bad_nights(limit=-1)))
+    all_bad_nights = list(map(lambda x: x[1], bad_nights(-1, is_primary)))
     return list(filter(lambda x: x[2] not in all_bad_nights, data))
