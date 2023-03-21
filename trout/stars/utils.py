@@ -26,7 +26,7 @@ def get_star_data(star_number: int, is_primary: bool):
     return: tuple of 3 tuple consisting (id, magnitude, date)
     """
 
-    table = star_table_name(star_number)
+    table = star_table_name(star_number, is_primary)
 
     if table:
         # Tuple used for enforcing immutability
