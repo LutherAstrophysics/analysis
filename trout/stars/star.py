@@ -354,7 +354,7 @@ class Star:
         return np.max(self.get_selected_data_column())
 
     def __str__(self):
-        return self
+        return self.__repr__()
 
     def __repr__(self):
         return f"Star: {self.number} Datapoints: {len(self._data)} Selected: {len(self.selected_data)}"  # noqa 501
