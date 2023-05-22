@@ -261,7 +261,7 @@ class Star:
             )
         data_points = len(data)
         # Filter bad nights
-        data = bad_nights_filtered_data(data)
+        data = bad_nights_filtered_data(data, self._is_primary)
         data_points_bad_nights_removed = len(data)
         # Data after removing zeros (nights where star is absent)
         data_cleaned = list(filter(lambda x: x[1] > 0, data))
