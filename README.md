@@ -1,3 +1,7 @@
+# Documentation
+[Here](https://lutherastrophysics.github.io/analysis/trout.html)
+
+
 The `analysis` package in this repo is made available in the JUPYTER
 notebook served at
 <http://10.30.5.4/>.
