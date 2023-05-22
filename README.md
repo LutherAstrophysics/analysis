@@ -1,5 +1,4 @@
-# Documentation
-[Here](https://lutherastrophysics.github.io/analysis/trout.html)
+[**See docs**](https://lutherastrophysics.github.io/analysis/trout.html)
 
 
 The `analysis` package in this repo is made available in the JUPYTER
