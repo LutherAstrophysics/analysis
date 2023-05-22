@@ -10,4 +10,5 @@ def get_star(star_number: int, is_primary: bool = True) -> Star:
         return Star(star_number, is_primary)
 
 
-__all__ = ["STAR_START", "STAR_END", "get_star_data", "get_star"]
+__all__ = ["STAR_START", "STAR_END", "get_star_data", "get_star", "Star"]
+
