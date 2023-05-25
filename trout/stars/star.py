@@ -5,7 +5,7 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 
-from trout.color import get_color
+from trout.color import get_color, get_internight_band
 from trout.constants import STAR_TABLE_HEADER
 from trout.conversions import flux_to_magnitude_4px
 from trout.database import query
@@ -46,6 +46,9 @@ class Star:
 
         self._selected_data = []
 
+        # Internight band for the star
+        self._internight_band = get_internight_band(number)
+
     @property
     def color(self):
         return self._color
@@ -61,6 +64,22 @@ class Star:
     @property
     def selected_data(self):
         return self._selected_data
+
+    @property
+    def internight_band(self):
+        return self._internight_band
+
+    def get_color(self):
+        """
+        Return the color value of the star
+        """
+        return self._color
+
+    def get_internight_band(self):
+        """
+    Return the internight normalization band for the star
+        """
+        return self._internight_band
 
     def peek(self):
         """

@@ -16,6 +16,7 @@
     "figsize",
     "fontsize",
     "fwhm",
+    "internight",
     "matplotlib",
     "mdates",
     "mysecretpassword",
