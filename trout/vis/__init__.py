@@ -6,6 +6,7 @@ from functools import cache
 import matplotlib.pyplot as plt
 import numpy as np
 
+from trout.color import internight_bands as get_internight_bands
 from trout.files.reference_log_file import ReferenceLogFile
 from trout.nights.year_nights import get_nights_in_a_year
 from trout.stars import Star, get_star
@@ -49,7 +50,7 @@ def attendance_plot(star_no, data_fn=Star.mean):
     Displays the attendance plot of the star where yearly signal (customizable,
     defaults to mean) is used. The size of the data point co-relates to
     attendance. Helper functions
-    `attendance_plot_by_mean` 
+    `attendance_plot_by_mean`
     and
     `attendance_plot_by_median` are pre-defined
     """
@@ -88,3 +89,19 @@ def attendance_plot_by_median(star):
     is used. The size of the data point co-relates to attendance
     """
     return attendance_plot(star, data_fn=Star.median)
+
+
+def internight_bands():
+    bands = get_internight_bands()
+    plt.figure(figsize=(10, 5))
+    x = bands.keys()
+    y = [len(bands[i]) for i in x]
+
+    # Crate bar plot
+    plt.bar(x, y, color="maroon", width=0.4)
+
+    plt.xlabel("Bands")
+    plt.ylabel("Star count")
+    plt.title("Internight normalization bands")
+
+    plt.show()
