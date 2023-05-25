@@ -10,6 +10,7 @@ from trout.color import internight_bands as get_internight_bands
 from trout.files.reference_log_file import ReferenceLogFile
 from trout.nights.year_nights import get_nights_in_a_year
 from trout.stars import Star, get_star
+from trout.stars.utils import STAR_END, STAR_START
 
 
 def field():
@@ -91,9 +92,17 @@ def attendance_plot_by_median(star):
     return attendance_plot(star, data_fn=Star.median)
 
 
-def internight_bands():
+def internight_bands(stars=range(STAR_START, STAR_END + 1)):
+    """
+    Draw a bar chart of stars (default to all stars) internight
+    normalization band
+    """
     bands = get_internight_bands()
     plt.figure(figsize=(10, 5))
+
+    for k in bands:
+        bands[k] = filter(lambda x: x in stars)
+
     x = bands.keys()
     y = [len(bands[i]) for i in x]
 
