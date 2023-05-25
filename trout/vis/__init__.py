@@ -101,7 +101,7 @@ def internight_bands(stars=range(STAR_START, STAR_END + 1)):
     plt.figure(figsize=(10, 5))
 
     for k in bands:
-        bands[k] = filter(lambda x: x in stars)
+        bands[k] = filter(lambda x: x in stars, bands[k])
 
     x = bands.keys()
     y = [len(bands[i]) for i in x]
