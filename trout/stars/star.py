@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Iterable, Union
+from typing import Iterable, List, Tuple, Union
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -10,9 +10,15 @@ from trout.constants import STAR_TABLE_HEADER
 from trout.conversions import flux_to_magnitude_4px
 from trout.database import query
 from trout.exceptions import InvalidQueryError, InvalidStarNumberError
+from trout.files.reference_log_file import ReferenceLogFile
 from trout.stars.utils import get_star_data, is_valid_star, star_table_name
 
-from .utils import bad_nights_filtered_data
+from .utils import STAR_END, bad_nights_filtered_data
+
+# Types
+StarNoType = int
+DistanceType = float
+CloseNeighborInformationType = Tuple[StarNoType, DistanceType]
 
 
 class Star:
@@ -352,6 +358,41 @@ class Star:
         Returns the max value of selected_data
         """
         return np.max(self.get_selected_data_column())
+
+    def closest_neighbors(
+        self, limit=5, sort_fn=lambda x: x[1], filter_fn=lambda x: x
+    ) -> List[CloseNeighborInformationType]:
+        """
+        Returns the list of `number` closest neighbors for
+        given star.
+
+        param star: star number
+        param limit: maximum number of neighbors to return
+        param sort_fn (optional):
+            Function used to sort the result
+            Defaults to distance
+        param filter_fn (optional): Default identity
+
+        returns: Ordered list of neighbors and the
+                distance between their centers
+        """
+        f = ReferenceLogFile.get_ref_revised_71()
+
+        star_xy = f.get_star_xy(self.number)
+        x, y = star_xy[0], star_xy[1]
+        neighbors = []
+
+        for neighbor in range(1, len(f.data()+1)):
+            neighbor_xy = f.get_star_xy(neighbor)
+            n_x, n_y = neighbor_xy[0], neighbor_xy[1]
+            distance = (((n_x-x)**2)+((n_y-y)**2))**(1/2)
+            # Ignore itself
+            if neighbor != self.number:
+                neighbors.append((neighbor, distance))
+        return sorted(filter(filter_fn, neighbors), key=sort_fn)[:limit]
+
+    def neighbors_within_distance(self, distance):
+        self.closest_neighbors(limit=STAR_END, filter_fn=lambda x: x[1] <= distance)
 
     def __str__(self):
         return self.__repr__()
