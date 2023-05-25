@@ -12,6 +12,9 @@ from trout.stars import Star, get_star
 
 
 def field():
+    """
+    Plot a simple visualization of the `m23` field based on ref_revised_71
+    """
     f = ReferenceLogFile.get_ref_revised_71()
     star_end = len(f.data()) + 1
     array_for_x_values = np.array([])
