@@ -5,7 +5,7 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 
-from trout.color import get_color, get_internight_band
+from trout.color import get_color
 from trout.constants import STAR_TABLE_HEADER
 from trout.conversions import flux_to_magnitude_4px
 from trout.database import query
@@ -47,7 +47,9 @@ class Star:
         self._selected_data = []
 
         # Internight band for the star
-        self._internight_band = get_internight_band(number)
+        from trout.internight import get_band
+
+        self._internight_band = get_band(number)
 
     @property
     def color(self):
@@ -77,7 +79,7 @@ class Star:
 
     def get_internight_band(self):
         """
-    Return the internight normalization band for the star
+        Return the internight normalization band for the star
         """
         return self._internight_band
 
@@ -401,10 +403,10 @@ class Star:
         x, y = star_xy[0], star_xy[1]
         neighbors = []
 
-        for neighbor in range(1, len(f.data()+1)):
+        for neighbor in range(1, len(f.data() + 1)):
             neighbor_xy = f.get_star_xy(neighbor)
             n_x, n_y = neighbor_xy[0], neighbor_xy[1]
-            distance = (((n_x-x)**2)+((n_y-y)**2))**(1/2)
+            distance = (((n_x - x) ** 2) + ((n_y - y) ** 2)) ** (1 / 2)
             # Ignore itself
             if neighbor != self.number:
                 neighbors.append((neighbor, distance))

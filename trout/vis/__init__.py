@@ -6,11 +6,10 @@ from functools import cache
 import matplotlib.pyplot as plt
 import numpy as np
 
-from trout.color import internight_bands as get_internight_bands
 from trout.files.reference_log_file import ReferenceLogFile
+from trout.internight import bands as get_bands
 from trout.nights.year_nights import get_nights_in_a_year
-from trout.stars import Star, get_star
-from trout.stars.utils import STAR_END, STAR_START
+from trout.stars import STAR_END, STAR_START, Star, get_star
 
 
 def field():
@@ -97,7 +96,7 @@ def internight_bands(stars=range(STAR_START, STAR_END + 1)):
     Draw a bar chart of stars (default to all stars) internight
     normalization band
     """
-    bands = get_internight_bands()
+    bands = get_bands()
     plt.figure(figsize=(10, 5))
 
     for k in bands:
