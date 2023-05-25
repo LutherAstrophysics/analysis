@@ -48,13 +48,18 @@ def internight_bands():
 
     for s in non_special_stars:
         c = get_color(s)
-        # Color band stars
-        if c > 0.135 and c <= 0.455:
-            color_band_1.append(s)
-        elif c > 0.455 and c <= 1.063:
-            color_band_2.append(s)
-        elif c > 1.063 and c <= 7:
-            color_band_3.append(s)
+        # Verify color isn't none (color for some stars is absent thus are in
+        # brightness band)
+        if c:
+            # Color band stars
+            if c > 0.135 and c <= 0.455:
+                color_band_1.append(s)
+            elif c > 0.455 and c <= 1.063:
+                color_band_2.append(s)
+            elif c > 1.063 and c <= 7:
+                color_band_3.append(s)
+            else:
+                brightness_band.append(s)
         else:
             brightness_band.append(s)
 
