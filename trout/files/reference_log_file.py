@@ -4,6 +4,7 @@ from typing import Dict, Tuple
 
 import numpy as np
 import numpy.typing as npt
+import pkg_resources
 
 from trout.files import line_str_contains_numbers_and_non_alphabets
 
@@ -19,6 +20,21 @@ class ReferenceLogFile:
         "sky_adu": 4,
         "star_adu": 5,
     }
+
+    ref_revised_71 = None
+
+    @classmethod
+    def get_ref_revised_71(cls):
+        """
+        Returns the ReferenceLogFile object corresponding to `ref_revised_71`
+        file
+        """
+        if not cls.ref_revised_71:
+            file_path = pkg_resources.resource_filename(
+                "trout", "data/ref_revised_71.txt"
+            )
+            cls.ref_revised_71 = ReferenceLogFile(file_path)
+        return cls.ref_revised_71
 
     def __init__(self, file_path: str) -> None:
         self.__path = Path(file_path)
