@@ -417,7 +417,9 @@ class Star:
         returns: Ordered list of neighbors and the
                 distance between their centers
         """
-        self.closest_neighbors(limit=STAR_END, filter_fn=lambda x: x[1] <= distance)
+        return self.closest_neighbors(
+            limit=STAR_END, filter_fn=lambda x: x[1] <= distance
+        )
 
     def __str__(self):
         return self.__repr__()
