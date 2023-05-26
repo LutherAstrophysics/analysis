@@ -99,11 +99,15 @@ def internight_bands(stars=range(STAR_START, STAR_END + 1)):
     bands = get_bands()
     plt.figure(figsize=(10, 5))
 
+    # Creating a copy is necessary as we don't want to alter 
+    # dict returned by get_bands is cached
+    bands_copy = {}
+
     for k in bands:
-        bands[k] = list(filter(lambda x: x in stars, bands[k]))
+        bands_copy[k] = filter(lambda x: x in stars, bands[k])
 
     x = bands.keys()
-    y = [len(bands[i]) for i in x]
+    y = [len(list(bands_copy[i])) for i in x]
 
     # Crate bar plot
     plt.bar(x, y, color="maroon", width=0.4)
