@@ -150,29 +150,29 @@ def step_stat(start_star, end_star, from_year, to_year):
 
 def step_stat_vis(
     stars_step_list: List[Tuple[StarNumberType, StepType]],
-    get_y: Callable[[StarNumberType], float],
-    y_label="Y",
+    get_x: Callable[[StarNumberType], float],
+    x_label="X",
     title="",
 ):
     """
     Display plot for given `stars_step_list` with step ratio in the
-    x-axis. The unary function `get_y` provides the y_value
+    y-axis. The unary function `get_x` provides the x_value
     """
 
     stars = [i[0] for i in stars_step_list]
     steps = [i[1] for i in stars_step_list]
-    # X-Axis is step
-    x = steps
+    # X-Axis is specified by user
+    x = [get_x(i) for i in stars]
     # Y-Axis is step
-    y = [get_y(i) for i in stars]
+    y = steps
 
     plt.plot(
         x,
         y,
         "ro",
     )
-    plt.xlabel("Step")
-    plt.ylabel(f"{y_label}")
+    plt.ylabel("Step")
+    plt.xlabel(f"{x_label}")
     plt.title(f"{title}")
 
     plt.show()
@@ -183,11 +183,11 @@ def preview_step(
     end_star,
     from_year,
     to_year,
-    get_y: Callable[[StarNumberType], float] = lambda x: 5,
+    get_x: Callable[[StarNumberType], float] = lambda x: 5,
 ):
     """
     Show a chart for quick preview of the step for given parameters
-    Note that the Y-Axis is a bogus value unless specified function
+    Note that the X-Axis is a bogus value unless specified 
     """
     d = step_stat(start_star, end_star, from_year, to_year)
-    step_stat_vis(d[1], get_y=get_y)
+    step_stat_vis(d[1], get_x=get_x)
