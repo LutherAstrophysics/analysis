@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Iterable, List, Tuple, Union
+from typing import Callable, Iterable, List, Tuple, Union
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -381,7 +381,12 @@ class Star:
         return np.max(self.get_selected_data_column())
 
     def closest_neighbors(
-        self, limit=5, sort_fn=lambda x: x[1], filter_fn=lambda x: x
+        self,
+        limit=5,
+        sort_fn: Callable[[StarNoType, DistanceType], Union[int, float]] = lambda x: x[
+            1
+        ],
+        filter_fn: Callable[[StarNoType], bool] = lambda x: True,
     ) -> List[CloseNeighborInformationType]:
         """
         Returns the list of `number` closest neighbors for
@@ -392,7 +397,7 @@ class Star:
         param sort_fn (optional):
             Function used to sort the result
             Defaults to distance
-        param filter_fn (optional): Default identity
+        param filter_fn (optional): Defaults to include every star
 
         returns: Ordered list of neighbors and the
                 distance between their centers
