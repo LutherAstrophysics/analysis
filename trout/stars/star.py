@@ -386,7 +386,7 @@ class Star:
         sort_fn: Callable[[StarNoType, DistanceType], Union[int, float]] = lambda x: x[
             1
         ],
-        filter_fn: Callable[[StarNoType], bool] = lambda x: True,
+        filter_fn: Callable[[StarNoType, DistanceType], bool] = lambda x: True,
     ) -> List[CloseNeighborInformationType]:
         """
         Returns the list of `number` closest neighbors for
