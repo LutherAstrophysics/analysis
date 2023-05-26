@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from functools import cache
+from typing import Callable, List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,6 +11,10 @@ from trout.files.reference_log_file import ReferenceLogFile
 from trout.internight import bands as get_bands
 from trout.nights.year_nights import get_nights_in_a_year
 from trout.stars import STAR_END, STAR_START, Star, get_star
+
+# Types
+StarNumberType = int
+StepType = float
 
 
 def field():
@@ -99,7 +104,7 @@ def internight_bands(stars=range(STAR_START, STAR_END + 1)):
     bands = get_bands()
     plt.figure(figsize=(10, 5))
 
-    # Creating a copy is necessary as we don't want to alter 
+    # Creating a copy is necessary as we don't want to alter
     # dict returned by get_bands is cached
     bands_copy = {}
 
@@ -117,3 +122,70 @@ def internight_bands(stars=range(STAR_START, STAR_END + 1)):
     plt.title("Internight normalization bands")
 
     plt.show()
+
+
+def step_stat(start_star, end_star, from_year, to_year):
+    """
+    Returns a tuple of dictionary and list with the step information for the
+    range of stars defined by `start_star`, `end_star`, `from_year` and
+    `to_year`
+
+    Note that the list returned only contains stars whose step ratio is
+    available
+    """
+    star_to_step_dict = {}
+    star_step_list = []
+
+    for star_no in range(start_star, end_star + 1):
+        star = get_star(star_no)
+        step_ratio = star.step(from_year, to_year)
+        star_to_step_dict[star_no] = step_ratio
+        # Note that it's important that we don't put stars that have nan values
+        # into the list if we are to use later sort that list. nan values mess
+        # up sorting
+        if not np.isnan(step_ratio):
+            star_step_list.append((star_no, step_ratio))
+    return star_to_step_dict, star_step_list
+
+
+def step_stat_vis(
+    stars_step_list: List[Tuple[StarNumberType, StepType]],
+    get_y: Callable[[StarNumberType], float],
+    y_label="Y",
+    title="",
+):
+    """
+    Display plot for given `stars_step_list` with step ratio in the
+    x-axis. The unary function `get_y` provides the y_value
+    """
+
+    # X-Axis is step
+    x = [i[1] for i in stars_step_list]
+    # Y-Axis is step
+    y = [get_y(j) for j in x]
+
+    plt.plot(
+        x,
+        y,
+        "ro",
+    )
+    plt.xlabel("Step")
+    plt.ylabel(f"{y_label}")
+    plt.title(f"{title}")
+
+    plt.show()
+
+
+def preview_step(
+    start_star,
+    end_star,
+    from_year,
+    to_year,
+    get_y: Callable[[StarNumberType], float] = lambda x: 5,
+):
+    """
+    Show a chart for quick preview of the step for given parameters
+    Note that the Y-Axis is a bogus value unless specified function
+    """
+    d = step_stat(start_star, end_star, from_year, to_year)
+    step_stat_vis(d[1], get_y=get_y)
