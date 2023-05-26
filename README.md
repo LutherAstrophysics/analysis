@@ -85,3 +85,7 @@ root of this project. i.e. README level as follows:
 DB_HOST='10.30.5.4'
 DB_PORT=5433
 ```
+
+## Running Tests
+Once you've set up your development environment (installed requirements, added
+`.env`) use the command `python -m unitest` to run the tests.
