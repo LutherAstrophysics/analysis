@@ -159,10 +159,12 @@ def step_stat_vis(
     x-axis. The unary function `get_y` provides the y_value
     """
 
+    stars = [i[0] for i in stars_step_list]
+    steps = [i[1] for i in stars_step_list]
     # X-Axis is step
-    x = [i[1] for i in stars_step_list]
+    x = steps
     # Y-Axis is step
-    y = [get_y(j) for j in x]
+    y = [get_y(i) for i in stars]
 
     plt.plot(
         x,
