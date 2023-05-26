@@ -8,7 +8,6 @@
 docs/
 
 # Library author custom testing code
-test*
 idea/*
 !idea/field.py
 
