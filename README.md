@@ -85,6 +85,10 @@ root of this project. i.e. README level as follows:
 DB_HOST='10.30.5.4'
 DB_PORT=5433
 ```
+Place your testing code (code to test the new functionality that you add to the
+library) in the `trout/idea` folder. Contents of that folder will be gitignored.
+You will need to add a special boilerplate to each file you write in that
+folder.  See [./idea/field.py](./idea/field.py) for example.
 
 ## Running Tests
 Once you've set up your development environment (installed requirements, added
