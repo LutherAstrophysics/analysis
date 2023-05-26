@@ -1,8 +1,11 @@
 # Boilerplate to allow importing `trout`
 import sys
 
-if "../" not in sys.path:
-    sys.path.append("../")
+if ".." not in sys.path:
+    sys.path.append("..")
+
+if "." not in sys.path:
+    sys.path.append(".")
 
 
 # Write your code here
