@@ -184,10 +184,12 @@ def preview_step(
     from_year,
     to_year,
     get_x: Callable[[StarNumberType], float] = lambda x: 5,
+    x_label="X",
+    title="",
 ):
     """
     Show a chart for quick preview of the step for given parameters
-    Note that the X-Axis is a bogus value unless specified 
+    Note that the X-Axis is a bogus value unless specified
     """
     d = step_stat(start_star, end_star, from_year, to_year)
-    step_stat_vis(d[1], get_x=get_x)
+    step_stat_vis(d[1], get_x=get_x, x_label=x_label, title=title)

@@ -412,7 +412,11 @@ class Star:
                 neighbors.append((neighbor, distance))
         return sorted(filter(filter_fn, neighbors), key=sort_fn)[:limit]
 
-    def neighbors_within_distance(self, distance):
+    def neighbors_within_distance(self, distance) -> List[CloseNeighborInformationType]:
+        """
+        returns: Ordered list of neighbors and the
+                distance between their centers
+        """
         self.closest_neighbors(limit=STAR_END, filter_fn=lambda x: x[1] <= distance)
 
     def __str__(self):
