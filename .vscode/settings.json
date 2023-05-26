@@ -12,6 +12,7 @@
     "autofmt",
     "badnights",
     "Datapoints",
+    "dotenv",
     "dtype",
     "figsize",
     "fontsize",

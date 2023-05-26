@@ -74,3 +74,14 @@ To update this package and have the updates reflected in server's Jupyter.
 1. If still the changes aren't reflected, you might have to restart the server.
 
 ## Primary and secondary data source
+
+TODO
+
+
+## Developing locally
+When testing this repo locally, set environment variables in `.env` file at the
+root of this project. i.e. README level as follows:
+```
+DB_HOST='10.30.5.4'
+DB_PORT=5433
+```

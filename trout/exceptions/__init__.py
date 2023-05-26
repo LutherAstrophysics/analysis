@@ -4,3 +4,7 @@ class InvalidStarNumberError(Exception):
 
 class InvalidQueryError(Exception):
     pass
+
+
+class UnknownStarBandException(Exception):
+    pass

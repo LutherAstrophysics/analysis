@@ -49,7 +49,7 @@ class Star:
         # Internight band for the star
         from trout.internight import get_band
 
-        self._internight_band = get_band(number)
+        self.get_internight_band = get_band(number)
 
     @property
     def color(self):

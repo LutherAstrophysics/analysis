@@ -1,4 +1,11 @@
+import os
+
 import psycopg2
+from dotenv import load_dotenv
+
+load_dotenv()
+_DB_HOST = os.getenv("DB_HOST") or "localhost"
+_DB_PORT = os.getenv("DB_PORT") or 5433
 
 
 def connect(on_success):
@@ -13,8 +20,8 @@ def connect(on_success):
         dbname="postgres",
         user="reader",
         password="mysecretpassword",
-        port=5433,
-        host="localhost",
+        port=_DB_PORT,
+        host=_DB_HOST,
     )
     with conn.cursor() as curs:
         try:
