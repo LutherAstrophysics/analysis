@@ -131,7 +131,8 @@ def step_stat(start_star, end_star, from_year, to_year):
     `to_year`
 
     Note that the list returned only contains stars whose step ratio is
-    available
+    available. Step is defined as the ratio of the mean ADU in `to_year` to the
+    mean ADU in `from_year`
     """
     star_to_step_dict = {}
     star_step_list = []
@@ -146,6 +147,27 @@ def step_stat(start_star, end_star, from_year, to_year):
         if not np.isnan(step_ratio):
             star_step_list.append((star_no, step_ratio))
     return star_to_step_dict, star_step_list
+
+
+def print_step_info(
+    first_star: int, last_star: int, from_year: int, to_year: int
+) -> None:
+    """
+    This step analyzer prints the ordered list of step from `from_year` to
+    `to_year` for `first_star` <= stars `last_star` such that the star is
+    present in both the years. Also reports the count of stars at the end of the
+    program. Note that the step is the ratio of the mean ADU in `to_year` to the
+    mean ADU in `from_year`
+    """
+    print(f"{'Star':10s}{'Step':^10s}", flush=True)
+    _, step_lst = step_stat(first_star, last_star, from_year, to_year)
+    sorted_by_step = sorted(step_lst, key=lambda x: x[1])
+    count = 0
+    for star, step in sorted_by_step:
+        print(f"{star:<10}{step:^10.4f}", flush=True)
+        count += 1
+
+    print("\nCount", count)
 
 
 def step_stat_vis(
