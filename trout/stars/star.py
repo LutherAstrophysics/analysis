@@ -9,7 +9,8 @@ from trout.color import get_color
 from trout.constants import STAR_TABLE_HEADER
 from trout.conversions import flux_to_magnitude_4px
 from trout.database import query
-from trout.exceptions import InvalidQueryError, InvalidStarNumberError
+from trout.exceptions import (InvalidQueryError, InvalidStarNumberError,
+                              StarNotPresentInReferenceException)
 from trout.files.reference_log_file import ReferenceLogFile
 from trout.stars.utils import get_star_data, is_valid_star, star_table_name
 
@@ -407,8 +408,12 @@ class Star:
         star_xy = f.get_star_xy(self.number)
         x, y = star_xy[0], star_xy[1]
         neighbors = []
+        last_star = len(f.data())
 
-        for neighbor in range(1, len(f.data() + 1)):
+        if self.number > last_star:
+            raise StarNotPresentInReferenceException
+
+        for neighbor in range(1, last_star + 1):
             neighbor_xy = f.get_star_xy(neighbor)
             n_x, n_y = neighbor_xy[0], neighbor_xy[1]
             distance = (((n_x - x) ** 2) + ((n_y - y) ** 2)) ** (1 / 2)
@@ -425,6 +430,42 @@ class Star:
         return self.closest_neighbors(
             limit=STAR_END, filter_fn=lambda x: x[1] <= distance
         )
+
+    def brightest_duplicate(self, threshold=1, not_in=None) -> Union[int, None]:
+        """
+        returns: The brightest (lowest star no) star that is not in `not_in`
+                (defaults to empty list) that is within `threshold` distance
+                (default 1px) of the current star. This data is based on
+                ref_revised_71 reference file. Note that it ignores the
+                neighbor less brighter than itself
+
+
+        This may be useful when we're trying to identify how many duplicate
+        stars (and what those duplicates are) in our reference file. Duplicate
+        here refers to stars that are so close to each other that they might
+        as well be the same star even though we're differentiating them as two
+        OR even though they are two different stars, what's radius of extraction
+        we use, we get the almost the same ADU for both these stars as they are
+        that close.
+        """
+        # Since providing an empty list as the default argument has weird
+        # behavior, we set it inside the function.
+        if not_in is None:
+            not_in = []
+        neighbors = list(
+            filter(
+                lambda x: x[0] not in not_in and x[0] < self.number,
+                sorted(
+                    self.neighbors_within_distance(threshold),
+                    # Sort by star number
+                    key=lambda x: x[0],
+                ),
+            )
+        )
+        if len(neighbors) > 0:
+            return neighbors[0]
+        else:
+            return None
 
     def __str__(self):
         return self.__repr__()

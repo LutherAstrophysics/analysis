@@ -8,3 +8,7 @@ class InvalidQueryError(Exception):
 
 class UnknownStarBandException(Exception):
     pass
+
+
+class StarNotPresentInReferenceException(Exception):
+    pass
