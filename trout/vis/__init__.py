@@ -223,16 +223,25 @@ def print_step_details(
     """
     Prints the step information of the star alongside its details for the range
     of stars defined by `start_star`, `end_star`, `from_year`, `to_year` and the
-    list of close neighbors within a given threshold (default: 8)
+    list of close neighbors within a given threshold (default: 8).
+    Additionally it also prints information about stars such as its closest neighbor
+    **in the entire field alongside distance** and the star's X, Y co-ordinate
+    in our reference file
     """
     star_to_step_dict = {}
     star_step_list = []
     neighbors = {}
+    closest_neighbors = {}
     colors = {}
     intr_night_bands = {}
+    star_x = {}
+    star_y = {}
+
+    f = ReferenceLogFile.get_ref_revised_71()
 
     for star_no in range(start_star, end_star + 1):
         star = get_star(star_no)
+        star_x[star_no], star_y[star_no] = f.get_star_xy(star_no)
         step_ratio = star.step(from_year, to_year)
         star_to_step_dict[star_no] = step_ratio
         # Note that it's important that we don't put stars that have nan values
@@ -249,30 +258,47 @@ def print_step_details(
             )
         )
         intr_night_bands[star_no] = star.internight_band
+        closest_neighbors[star_no] = star.closest_neighbors(limit=1)[0]
 
     print(f"Stars {start_star}-{end_star}")
     print(f"Step {from_year}-{to_year}")
-    print(f"Neighbors distance: {neighbor_distance_threshold}")
-    STAR, STEP, COLOR, INTERNIGHT_BAND, NEIGHBORS = (
+    print(f"Displaying neighbors within distance: {neighbor_distance_threshold}")
+    (
+        STAR,
+        X,
+        Y,
+        STEP,
+        COLOR,
+        INTERNIGHT_BAND,
+        CLOSEST_NEIGHBOR,
+        CLOSEST_NEIGHBOR_DISTANCE,
+        NEIGHBORS,
+    ) = (
         "Star",
+        "X",
+        "Y",
         "Step",
         "Color",
         "Internight Band",
+        "ClstNeig",
+        "ClstNeigDist",
         "Neighbors",
     )
     print("")
-    print(f"{STAR:<10s}{STEP:^10s}{COLOR:^10s}{INTERNIGHT_BAND:^25s}{NEIGHBORS:^20s}")
+    print(
+        f"{STAR:<10s}{X:<10s}{Y:<10s}{STEP:<10s}{COLOR:<10s}{INTERNIGHT_BAND:<25s}{CLOSEST_NEIGHBOR:<10s}{CLOSEST_NEIGHBOR_DISTANCE:<20s}{NEIGHBORS:<20s}"  # noqa #ES501
+    )
 
     # Sort by step
     star_step_list.sort(key=lambda x: x[1])
 
     for star_no, step in star_step_list:
         if c_val := colors[star_no]:
-            c = f"{c_val:^10.2f}"
+            c = f"{c_val:<10.2f}"
         else:
             c = f"{'':10s}"
         print(
-            f"{star_no:<10}{step:^10.2f}{c}{intr_night_bands[star_no]:^25s}{neighbors[star_no]:^20s}"  # noqa E501
+            f"{star_no:<10}{star_x[star_no]:<10.2f}{star_y[star_no]:<10.2f}{step:<10.2f}{c}{intr_night_bands[star_no]:<25s}{closest_neighbors[star_no][0]:<10}{closest_neighbors[star_no][1]:<20.2f}{neighbors[star_no]:<20s}"  # noqa E501
         )
 
     return star_to_step_dict, star_step_list
