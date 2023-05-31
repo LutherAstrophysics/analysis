@@ -90,6 +90,12 @@ class ReferenceLogFile:
         """
         return self._get_col_value(star_no, "x"), self._get_col_value(star_no, "y")
 
+    def get_star_fwhm(self, star_no: int) -> float:
+        """
+        Returns the fwhm for a given star
+        """
+        return self._get_col_value(star_no, "fwhm")
+
     def get_star_adu(self, star_no: int) -> float:
         """
         Returns the adu for a given star
