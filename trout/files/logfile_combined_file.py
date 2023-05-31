@@ -2,7 +2,7 @@ import re
 from collections import namedtuple
 from datetime import date, datetime
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -79,7 +79,7 @@ class LogFileCombinedFile:
         """
         return bool(self.file_name_re.match(self.path().name))
 
-    def night_date(self) -> date | None:
+    def night_date(self) -> Union[date, None]:
         """
         Returns the night date that can be inferred from the file name
         """
@@ -139,7 +139,7 @@ class LogFileCombinedFile:
             *star_data[:first_radii_adu_column], radii_adu
         )
 
-    def img_duration(self) -> float | None:
+    def img_duration(self) -> Union[float, None]:
         """
         Returns the image duration that can be inferred from the file name
         """
@@ -147,7 +147,7 @@ class LogFileCombinedFile:
             # The second capture group contains the image duration
             return float(self.file_name_re.match(self.path().name)[2])
 
-    def img_number(self) -> int | None:
+    def img_number(self) -> Union[int, None]:
         """
         Returns the image number associated to the filename if the file name is valid
         """
