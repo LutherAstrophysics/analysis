@@ -124,7 +124,13 @@ def internight_bands(stars=range(STAR_START, STAR_END + 1)):
     plt.show()
 
 
-def step_stat(start_star, end_star, from_year, to_year):
+def step_stat(
+    start_star,
+    end_star,
+    from_year,
+    to_year,
+    exclude_star: Callable[[Star], bool] = lambda x: False,
+):
     """
     Returns a tuple of dictionary and list with the step information for the
     range of stars defined by `start_star`, `end_star`, `from_year` and
@@ -139,6 +145,8 @@ def step_stat(start_star, end_star, from_year, to_year):
 
     for star_no in range(start_star, end_star + 1):
         star = get_star(star_no)
+        if exclude_star(star):
+            continue
         step_ratio = star.step(from_year, to_year)
         star_to_step_dict[star_no] = step_ratio
         # Note that it's important that we don't put stars that have nan values
@@ -208,12 +216,13 @@ def preview_step(
     get_x: Callable[[StarNumberType], float] = lambda x: 5,
     x_label="X",
     title="",
+    exclude_star: Callable[[Star], bool] = lambda x: False,  # Include all by default
 ):
     """
     Show a chart for quick preview of the step for given parameters
     Note that the X-Axis is a bogus value unless specified
     """
-    d = step_stat(start_star, end_star, from_year, to_year)
+    d = step_stat(start_star, end_star, from_year, to_year, exclude_star)
     step_stat_vis(d[1], get_x=get_x, x_label=x_label, title=title)
 
 
