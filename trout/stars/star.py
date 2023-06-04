@@ -49,6 +49,7 @@ class Star:
 
         # Internight band for the star
         from trout.internight import get_band
+
         self._internight_band = get_band(number)
 
     @property
@@ -268,23 +269,35 @@ class Star:
             plt.show()
 
     def attendance(
-        self, year: Union[int, None] = None, print_stats=False
+        self,
+        from_year: Union[int, None] = None,
+        to_year: Union[int, None] = None,
+        print_stats=False,
     ) -> float:  # noqa 501
         """
         Calculates the attendance % of the star. The attendance is calculated
-        after removing the bad nights.
+        after removing the bad nights. If `from_year` and `to_year` are not
+        provided, calculates the attendance to the entire data range. 
 
-        param: (optional) year for which to calculate attendance. Default to
-                all years
+        If `from_year` and `to_year` are passed as 2012, 2013, calculates
+        the attendance for the two years. 
+
+        If only `from_year` is passed as 2012, calculates the attendance
+        for just 2012.
+
+        param: (optional) from_year 
+        param: (optional) to_year 
         return: the attendance percentage in given year or the entire period
         """
-        if year is None:
+        if from_year is None:
             data = query(f"SELECT * FROM {self._table}")
-        elif type(year) != int:
+        elif type(from_year) != int:
             raise ValueError("Invalid year value")
         else:
+            if to_year is None:
+                to_year = from_year
             data = query(
-                f"SELECT * FROM {self._table} where date >= '{year}-01-01' and date < '{year + 1}-01-01'"  # noqa 501
+                f"SELECT * FROM {self._table} where date >= '{from_year}-01-01' and date < '{to_year + 1}-01-01'"  # noqa 501
             )
         data_points = len(data)
         # Filter bad nights
@@ -299,7 +312,7 @@ class Star:
             )
             print(f"Attended nights (without bad nights): {len(data_cleaned)}")
         if data_points == 0:
-            raise ValueError(f"Year {year} doesn't exist")
+            raise ValueError(f"No data points {from_year}-{to_year} doesn't exist")
         return len(data_cleaned) / data_points_bad_nights_removed
 
     def filter_bad_nights(self):
