@@ -1,6 +1,7 @@
 import datetime
 import decimal
 import math
+from typing import Union
 
 dec = decimal.Decimal
 
@@ -20,6 +21,10 @@ class MoonPositions:
 
 
 def position(now=None):
+    """
+     Returns a decimal representation for the phase of the moon
+    Takes into account waning and waxing. Full moon is about 0.5
+    """
     if now is None:
         now = datetime.datetime.now()
 
@@ -30,7 +35,11 @@ def position(now=None):
     return lunations % dec(1)
 
 
-def phase(pos):
+def phase(d: Union[datetime.date, datetime.datetime]):
+    """
+    Returns the phase (in str) of the moon in the given date
+    """
+    pos = position(d)
     index = (pos * dec(8)) + dec("0.5")
     index = math.floor(index)
     return {
