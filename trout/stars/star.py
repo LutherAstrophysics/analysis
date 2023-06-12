@@ -198,6 +198,7 @@ class Star:
         2009 feb and keep the magnitude of other data points intact, you would
         then write your transformation function first
 
+        ```
         def transform(data):
             # Break the tuple
             sn, flux, date = data
@@ -207,6 +208,7 @@ class Star:
                 return flux * 2
             else:
                 return flux
+        ```
 
         then you would call this method with the newly created transformation
         function as follows:
