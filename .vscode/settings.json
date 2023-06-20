@@ -18,6 +18,7 @@
     "fontsize",
     "fwhm",
     "internight",
+    "ltpr",
     "matplotlib",
     "mdates",
     "mysecretpassword",
