@@ -84,6 +84,7 @@ def _get_ltpr_threshold(year: int):
 def calc_bad_nights(
     year: int,
     /,
+    *,
     attendance_threshold: float = 0.5,
     ltpr_threshold: Union[float, None] = None,
     stars_to_use: Union[Iterable[int], None] = None,
