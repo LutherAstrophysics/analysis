@@ -1,6 +1,5 @@
 from datetime import datetime
-from functools import cache
-from typing import Iterable
+from typing import Iterable, Union
 
 import numpy as np
 
@@ -86,8 +85,8 @@ def calc_bad_nights(
     year: int,
     /,
     attendance_threshold: float = 0.5,
-    ltpr_threshold: float | None = None,
-    stars_to_use: Iterable[int] | None = None,
+    ltpr_threshold: Union[float, None] = None,
+    stars_to_use: Union[Iterable[int], None] = None,
     is_primary: bool = True,
     silent: bool = False,
     show_all_ltpr_values: bool = False,
@@ -180,7 +179,6 @@ Bad nights
     return bad_nights_list
 
 
-@cache
 def get_default_stars_to_include():
     """
     Returns default stars to use
