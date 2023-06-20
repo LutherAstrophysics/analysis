@@ -118,6 +118,26 @@ def calc_bad_nights(
     """
     # returns iterable of night date that have LTPR above the threshold
 
+    # The basic idea for this program is:
+    # Create a list for stars to process, call is `stars_to_process`
+    # Add stars 1-1000 to stars_to_process
+    # Throw out variable stars from `stars_to_process`
+    # Throw out stars that have <80% attendance for the year from `stars_to_process`
+
+    # Create a dictionary, call it `season_mean_signal` to hold mean signals of
+    # stars for the entire data season
+    #   Note that the mean signal for a season for a stars is calculated from
+    #   set of the internight normalized signal on each night of the season for
+    #   the star.  For each night, create a dictionary to hold data for the
+    #   night, call it `nights_data_dict` Create a entry in the dictionary with
+    #   the night_date as key and the value as the list containing: The ratio of
+    #   signal_of_star_on_night[night] / season_mean_signal[star_i] for each
+    #   star For each night, create a dict to hold std of values in
+    #   `nights_data_dict`, call this dict `nights_signal_std_dict` (note that
+    #   at this point, we have a standard deviation value for each night) We
+    #   mark nights that have this value above a threshold (example: 0.035 for
+    #   old camera, 0.03 for new camera) as bad nights for the year
+
     if stars_to_use is None:
         stars_to_use = get_default_stars_to_include()
     if ltpr_threshold is None:
