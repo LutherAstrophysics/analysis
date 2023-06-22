@@ -19,8 +19,8 @@ class LogFileCombinedFile:
     sky_adu_column = 5
     x_column = 0
     y_column = 1
-    file_name_re = re.compile("(\d{2}-\d{2}-\d{2})_m23_(\d+\.\d*)-(\d{3})\.txt")
-    star_adu_radius_re = re.compile("Star ADU (\d+)")
+    file_name_re = re.compile(r"(\d{2}-\d{2}-\d{2})_m23_(\d+\.\d*)-(\d{3})\.txt")
+    star_adu_radius_re = re.compile(r"Star ADU (\d+)")
 
     StarLogfileCombinedData = namedtuple(
         "StarLogfileCombinedData",
