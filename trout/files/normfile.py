@@ -27,4 +27,8 @@ class NormFile:
         cols = df.columns.tolist()
         cols = ["star"] + cols[:-2]
         df = df[cols]
+
+        # Add star_no as row label
+        df.index = df['star']
+
         return df
