@@ -66,4 +66,4 @@ class Year:
         return f"Year: {self.year}"
 
     def __repr__(self):
-        return self.year
+        return str(self.year)
