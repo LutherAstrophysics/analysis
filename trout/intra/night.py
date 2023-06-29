@@ -61,7 +61,7 @@ class Night:
         return FluxLogCombined(self.night_date, star_no, radius)
 
     def get_color_normalized(self, radius: int):
-        if not self._color_normalized.get(radius):
+        if self._color_normalized.get(radius, None) is None:
             folder = (
                 self.path
                 / "Color Normalized"
