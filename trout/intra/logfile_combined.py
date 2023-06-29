@@ -55,6 +55,8 @@ class LogFileCombined:
             self._data = pd.read_csv(
                 self.path, skiprows=8, delimiter=r"\s{2,}", engine="python"
             )
+            self._data.index = [i+1 for i in self._data.index]
+            self._data.index.name = "Star_no"
         return self._data
 
     @property
