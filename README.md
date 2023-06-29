@@ -126,7 +126,7 @@ Keep in mind that the full output isn't shown. However the idea is that the
 folder should contain folders of year names which should contain nightly data
 for the year processed by `m23` library. Ability to access intra-night data
 remotely is one of the main features of our library. Use it well and use it
-wisely.
+wisely. See an example usage of this feature [here](https://github.com/LutherAstrophysics/suman-analysis/blob/main/intra/all_data_intranight.ipynb)
 
 ## Running Tests
 Once you've set up your development environment (installed requirements, added
