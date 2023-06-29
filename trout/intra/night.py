@@ -6,7 +6,6 @@ import pandas as pd
 from .aligned_combined import AlignedCombined
 from .flux_log_combined import FluxLogCombined
 from .logfile_combined import LogFileCombined
-from .year import Year
 
 
 @total_ordering
@@ -39,6 +38,7 @@ class Night:
         return cls.nights[night_name]
 
     def __init__(self, year, month, day, year_instance=None):
+        from .year import Year
         if not year_instance:
             year_instance = Year(year)
         assert year_instance.path.exists()

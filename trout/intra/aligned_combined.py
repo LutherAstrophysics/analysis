@@ -4,8 +4,6 @@ from functools import total_ordering
 
 from astropy.io.fits import getdata
 
-from .night import Night
-
 
 @total_ordering
 class AlignedCombined:
@@ -30,6 +28,7 @@ class AlignedCombined:
         return cls.files[identifier]
 
     def __init__(self, night_date: date, number: int):
+        from .night import Night
         self._night = Night(night_date.year, night_date.month, night_date.day)
         number_str = f"{number:04}"
         folder = self._night.path / "Aligned Combined"
@@ -68,7 +67,7 @@ class AlignedCombined:
         return self._path
 
     @property
-    def night(self) -> Night:
+    def night(self):
         return self._night
 
     def __lt__(self, other):

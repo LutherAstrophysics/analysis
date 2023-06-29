@@ -5,8 +5,6 @@ from typing import Iterable
 
 from trout.intra import DATA_DRIVE
 
-from .night import Night
-
 
 @total_ordering
 class Year:
@@ -33,7 +31,8 @@ class Year:
         self._nights = None
 
     @property
-    def nights(self) -> Iterable[Night]:
+    def nights(self) -> Iterable:
+        from .night import Night
         if self._nights is None:
             nights = []
             for f in self.path.glob("*"):
