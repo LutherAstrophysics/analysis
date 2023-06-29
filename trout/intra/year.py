@@ -3,7 +3,7 @@ from functools import total_ordering
 from pathlib import Path
 from typing import Iterable
 
-from trout.intra import DATA_DRIVE, main_path
+from trout.intra import DATA_DRIVE
 
 from .night import Night
 
@@ -29,7 +29,7 @@ class Year:
         self._year = year
         self._path = self.make_year_path(year)
         if not self._path.exists():
-            raise ValueError(f"{year} data doesn't exist in", main_path)
+            raise ValueError(f"{year} data doesn't exist in", DATA_DRIVE)
         self._nights = None
 
     @property
