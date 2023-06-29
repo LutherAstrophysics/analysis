@@ -81,7 +81,7 @@ class Night:
                 skiprows=2,
                 delimiter=r"\s{2,}",
                 engine="python",
-                index_col="0",
+                index_col=0,
             )  # C-engine doesn't support regex delimiter
         return self._color_normalized[radius]
 
