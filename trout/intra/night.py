@@ -39,6 +39,7 @@ class Night:
 
     def __init__(self, year, month, day, year_instance=None):
         from .year import Year
+
         if not year_instance:
             year_instance = Year(year)
         assert year_instance.path.exists()
@@ -76,7 +77,11 @@ class Night:
                 raise Exception("Multiple candidates found")
             candidate = candidates[0]
             self._color_normalized[radius] = pd.read_csv(
-                candidate, skiprows=2, delimiter=r"\s{2,}", engine="python"
+                candidate,
+                skiprows=2,
+                delimiter=r"\s{2,}",
+                engine="python",
+                index_col="0",
             )  # C-engine doesn't support regex delimiter
         return self._color_normalized[radius]
 
