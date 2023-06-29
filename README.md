@@ -84,11 +84,49 @@ root of this project. i.e. README level as follows:
 ```
 DB_HOST='10.30.5.4'
 DB_PORT=5433
+DATA_DRIVE="/media/m23/S1/Python_Processed"
 ```
 Place your testing code (code to test the new functionality that you add to the
 library) in the `trout/idea` folder. Contents of that folder will be gitignored.
 You will need to add a special boilerplate to each file you write in that
 folder.  See [./idea/field.py](./idea/field.py) for example.
+
+Note that data drive is a folder with the structure that looks like the following:
+```
+├── 2009
+│   ├── April 06, 2009
+│   │   ├── Aligned
+│   │   ├── Aligned Combined
+│   │   ├── Calibration Frames
+│   │   ├── Charts
+│   │   ├── Color Normalized
+│   │   ├── config.toml
+│   │   ├── Flux Logs Combined
+│   │   ├── Log Files Combined
+│   │   ├── m23_aligned_stats_04-06-09.txt
+│   │   ├── Night-2009-04-06-Processing-log.txt
+│   │   ├── Raw Calibrated Images
+│   │   └── Sky background
+│   ├── April 08, 2009
+│   │   ├── Aligned
+│   │   ├── Aligned Combined
+│   │   ├── Calibration Frames
+│   │   ├── Charts
+│   │   ├── Color Normalized
+│   │   ├── config.toml
+│   │   ├── Flux Logs Combined
+│   │   ├── Log Files Combined
+│   │   ├── m23_aligned_stats_04-08-09.txt
+│   │   ├── Night-2009-04-08-Processing-log.txt
+│   │   ├── Raw Calibrated Images
+│   │   └── Sky background
+```
+
+Keep in mind that the full output isn't shown. However the idea is that the
+folder should contain folders of year names which should contain nightly data
+for the year processed by `m23` library. Ability to access intra-night data
+remotely is one of the main features of our library. Use it well and use it
+wisely.
 
 ## Running Tests
 Once you've set up your development environment (installed requirements, added

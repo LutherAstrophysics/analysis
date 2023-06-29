@@ -9,6 +9,7 @@
   },
   "python.linting.enabled": true,
   "cSpell.words": [
+    "astropy",
     "autofmt",
     "badnights",
     "dataframe",
@@ -18,6 +19,7 @@
     "figsize",
     "fontsize",
     "fwhm",
+    "getdata",
     "internight",
     "internorm",
     "ltpr",
