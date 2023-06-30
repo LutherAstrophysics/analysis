@@ -3,6 +3,7 @@ from datetime import date
 from functools import total_ordering
 
 import matplotlib.pyplot as plt
+import numpy as np
 from astropy.io.fits import getdata
 from matplotlib.colors import LogNorm
 
@@ -31,6 +32,7 @@ class AlignedCombined:
 
     def __init__(self, night_date: date, number: int):
         from .night import Night
+
         self._night = Night(night_date.year, night_date.month, night_date.day)
         number_str = f"{number:04}"
         folder = self._night.path / "Aligned Combined"
@@ -44,10 +46,21 @@ class AlignedCombined:
         self._data = None
 
     def plot(self):
-        plt.figure()
-        plt.imshow(self.data, cmap='gray', norm=LogNorm())
-        plt.colorbar()
-        plt.title(self.__str__())
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
+
+        ticks = np.arange(0, 1023, 64)
+
+        ax.set_xticks(ticks, minor=True)
+        ax.set_yticks(ticks, minor=True)
+
+        ax.grid(which="both")
+        ax.grid(which="minor", alpha=0.2)
+        ax.grid(which="major", alpha=0)
+
+        x = ax.imshow(self.data, cmap="gray", norm=LogNorm())
+        fig.colorbar(x)
+        plt.show()
 
     def is_valid_file_name(self):
         return bool(self.file_name_re.match(self.path.name))
