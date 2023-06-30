@@ -59,6 +59,11 @@ class AlignedCombined:
         ax.grid(which="major", alpha=0)
 
         x = ax.imshow(self.data, cmap="gray", norm=LogNorm())
+
+        # Plot Star 1 just for reference
+        ax.scatter([746.58], [459.64], color="r")
+        ax.text(700, 459, "#1: 746.58, 459.64")
+
         fig.colorbar(x)
         plt.show()
 
