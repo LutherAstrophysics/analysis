@@ -2,7 +2,9 @@ import re
 from datetime import date
 from functools import total_ordering
 
+import matplotlib.pyplot as plt
 from astropy.io.fits import getdata
+from matplotlib.colors import LogNorm
 
 
 @total_ordering
@@ -41,12 +43,11 @@ class AlignedCombined:
         self._path = candidate
         self._data = None
 
-    # TODO
-    #     def plot(self):
-    #         plt.figure()
-    #         plt.imshow(self.data, cmap='gray')
-    #         plt.colorbar()
-    #         plt.title(self.__str__())
+    def plot(self):
+        plt.figure()
+        plt.imshow(self.data, cmap='gray', norm=LogNorm())
+        plt.colorbar()
+        plt.title(self.__str__())
 
     def is_valid_file_name(self):
         return bool(self.file_name_re.match(self.path.name))
