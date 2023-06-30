@@ -70,7 +70,10 @@ class SkyNew:
         return self._years
 
     def _get_csv_link(self, year):
-        return f"https://docs.google.com/spreadsheets/d/{self.spreadsheet_id}/gviz/tq?tqx=out:csv&sheet={year}" # noqa
+        return f"https://docs.google.com/spreadsheets/d/{self.spreadsheet_id}/gviz/tq?tqx=out:csv&sheet={year}"  # noqa
 
     def _get_df(self, url):
-        return pd.read_csv(url, usecols=lambda x: not x.split("_")[0].isdigit())
+        if self._trim:
+            return pd.read_csv(url, usecols=lambda x: not x.split("_")[0].isdigit())
+        else:
+            return pd.read_csv(url)
