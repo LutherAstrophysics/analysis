@@ -73,12 +73,10 @@ def _get_ltpr_threshold(year: int):
     Returns the LTPR aka. badness threshold to use
     for the given year
     """
-    if 2003 <= year <= 2006:
+    if year <= 2008:
         return 0.035
-    elif 2007 <= year <= 2008:
-        return 0.045
     else:
-        return 0.035
+        return 0.025
 
 
 def calc_bad_nights(
