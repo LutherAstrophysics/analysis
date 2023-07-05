@@ -6,6 +6,7 @@ import pandas as pd
 from trout.intra.aligned_combined import AlignedCombined
 from trout.intra.flux_log_combined import FluxLogCombined
 from trout.intra.logfile_combined import LogFileCombined
+from trout.moon import phase, position
 
 
 @total_ordering
@@ -84,6 +85,14 @@ class Night:
                 index_col=0,
             )  # C-engine doesn't support regex delimiter
         return self._color_normalized[radius]
+
+    @property
+    def stats(self):
+        return {
+            "moon_phase_name": phase(datetime(self.night_date)),
+            "moon_phase": position(datetime(self.night_date)),
+            # TODO: Humidity
+        }
 
     @property
     def sky_bg(self):
