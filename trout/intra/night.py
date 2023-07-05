@@ -3,9 +3,9 @@ from functools import total_ordering
 
 import pandas as pd
 
-from .aligned_combined import AlignedCombined
-from .flux_log_combined import FluxLogCombined
-from .logfile_combined import LogFileCombined
+from trout.intra.aligned_combined import AlignedCombined
+from trout.intra.flux_log_combined import FluxLogCombined
+from trout.intra.logfile_combined import LogFileCombined
 
 
 @total_ordering
