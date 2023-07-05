@@ -89,8 +89,8 @@ class Night:
     @property
     def stats(self):
         return {
-            "moon_phase_name": phase(datetime(self.night_date)),
-            "moon_phase": position(datetime(self.night_date)),
+            "moon_phase_name": phase(self.night_date),
+            "moon_phase": position(self.night_date),
             # TODO: Humidity data
         }
 
