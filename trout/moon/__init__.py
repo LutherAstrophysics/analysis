@@ -20,15 +20,17 @@ class MoonPositions:
     WaningCresce = "Waning Crescent"
 
 
-def position(now=None):
+def position(d=None):
     """
      Returns a decimal representation for the phase of the moon
     Takes into account waning and waxing. Full moon is about 0.5
     """
-    if now is None:
-        now = datetime.datetime.now()
+    if d is None:
+        d = datetime.datetime.now()
+    if isinstance(d, datetime.date):
+        d = datetime.datetime(d.year, d.month, d.day)
 
-    diff = now - datetime.datetime(2001, 1, 1)
+    diff = d - datetime.datetime(2001, 1, 1)
     days = dec(diff.days) + (dec(diff.seconds) / dec(86400))
     lunations = dec("0.20439731") + (days * dec("0.03386319269"))
 
@@ -39,6 +41,8 @@ def phase(d: Union[datetime.date, datetime.datetime]):
     """
     Returns the phase (in str) of the moon in the given date
     """
+    if isinstance(d, datetime.date):
+        d = datetime.datetime(d.year, d.month, d.day)
     pos = position(d)
     index = (pos * dec(8)) + dec("0.5")
     index = math.floor(index)
