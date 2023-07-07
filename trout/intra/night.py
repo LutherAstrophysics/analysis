@@ -64,7 +64,7 @@ class Night:
         """
         Checks whether the night is a bad night
         """
-        _, bad_nights_for_year = zip(*bad_nights(year=self.night_date.year))
+        _, bad_nights_for_year = zip(*bad_nights(year=self.night_date.year, is_primary=False))
         return self.night_date in bad_nights_for_year
     
     def has_color_normalized_folder(self):
