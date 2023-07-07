@@ -7,6 +7,7 @@ from trout.intra.aligned_combined import AlignedCombined
 from trout.intra.flux_log_combined import FluxLogCombined
 from trout.intra.logfile_combined import LogFileCombined
 from trout.moon import phase, position
+from trout.nights import bad_nights
 
 
 @total_ordering
@@ -58,6 +59,13 @@ class Night:
         self._sky_bg = None
         self._alignment_stats = None
         self._color_normalized = {}
+
+    def is_bad(self):
+        """
+        Checks whether the night is a bad night
+        """
+        ids, bad_nights_for_year = zip(*bad_nights(year=self.night_date.year))
+        return self.night_date in bad_nights_for_year
 
     def get_star_fluxlog_for_radius(self, star_no, radius: int):
         return FluxLogCombined(self.night_date, star_no, radius)
