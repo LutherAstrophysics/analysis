@@ -66,6 +66,15 @@ class Night:
         """
         _, bad_nights_for_year = zip(*bad_nights(year=self.night_date.year))
         return self.night_date in bad_nights_for_year
+    
+    def has_color_normalized_folder(self):
+        """
+        Returns whether the night has color normalized folder Nights that didn't
+        run through renorm potentially because of insufficient data points won't
+        have this folder
+        """
+        f = self.path / "Color Normalized"
+        return f.exists() and f.is_dir()
 
     def get_star_fluxlog_for_radius(self, star_no, radius: int):
         return FluxLogCombined(self.night_date, star_no, radius)

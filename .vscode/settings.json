@@ -33,6 +33,7 @@
     "normfile",
     "psycopg",
     "pyplot",
+    "renorm",
     "savetxt",
     "skiprows",
     "xaxis",
