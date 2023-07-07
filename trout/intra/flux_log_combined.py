@@ -34,7 +34,7 @@ class FluxLogCombined:
         else:
             return f"{radius} Pixel Radius"
 
-    def __new__(cls, night_date: date, number: int, radius: int):
+    def __new__(cls, night_date: date, number: int, radius: int, all: bool):
         """
         Ensures each fluxlog combined instance is a singleton.
         """
@@ -44,18 +44,22 @@ class FluxLogCombined:
         assert (type(year), type(month), type(day)) == (int,) * 3
         assert (type(number)) == int
         assert (type(radius)) == int
-        identifier = (year, month, day, number, radius)
+        identifier = (year, month, day, number, radius, all)
         if not cls.files.get(identifier):
             cls.files[identifier] = super(FluxLogCombined, cls).__new__(cls)
         return cls.files[identifier]
 
-    def __init__(self, night_date: date, star_number: int, radius: int):
+    def __init__(self, night_date: date, star_number: int, radius: int, all=False):
         from .night import Night
+
         self._night = Night(night_date.year, night_date.month, night_date.day)
         number_str = f"{star_number:04}"
+        flux_log_folder_name = (
+            "Flux Logs Combined(All)" if all else "Flux Logs Combined"
+        )
         folder = (
             self._night.path
-            / "Flux Logs Combined"
+            / flux_log_folder_name
             / self.get_radius_folder_name(radius)
         )
         candidates = list(folder.glob(f"*-{number_str}_flux.txt"))

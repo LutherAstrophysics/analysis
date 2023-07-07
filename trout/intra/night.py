@@ -62,6 +62,9 @@ class Night:
     def get_star_fluxlog_for_radius(self, star_no, radius: int):
         return FluxLogCombined(self.night_date, star_no, radius)
 
+    def get_all_star_fluxlog_for_radius(self, star_no, radius: int):
+        return FluxLogCombined(self.night_date, star_no, radius, all=True)
+
     def get_color_normalized(self, radius: int):
         if self._color_normalized.get(radius, None) is None:
             folder = (
