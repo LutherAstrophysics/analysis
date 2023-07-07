@@ -66,7 +66,7 @@ class Night:
         """
         try:
             _, bad_nights_for_year = zip(*bad_nights(year=self.night_date.year, is_primary=False))
-        except ValueError: # For when the list of bad nights is empty
+        except ValueError:  # For when the list of bad nights is empty
             bad_nights_for_year = []
         return self.night_date in bad_nights_for_year
     
