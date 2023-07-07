@@ -80,7 +80,7 @@ class Night:
         return f.exists() and f.is_dir()
 
     def get_star_fluxlog_for_radius(self, star_no, radius: int):
-        return FluxLogCombined(self.night_date, star_no, radius)
+        return FluxLogCombined(self.night_date, star_no, radius, all=False)
 
     def get_all_star_fluxlog_for_radius(self, star_no, radius: int):
         return FluxLogCombined(self.night_date, star_no, radius, all=True)
