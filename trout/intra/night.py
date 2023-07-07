@@ -64,7 +64,7 @@ class Night:
         """
         Checks whether the night is a bad night
         """
-        ids, bad_nights_for_year = zip(*bad_nights(year=self.night_date.year))
+        _, bad_nights_for_year = zip(*bad_nights(year=self.night_date.year))
         return self.night_date in bad_nights_for_year
 
     def get_star_fluxlog_for_radius(self, star_no, radius: int):
