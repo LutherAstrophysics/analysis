@@ -65,6 +65,7 @@ class AlignedCombined:
         ax.text(700, 459, "#1: 746.58, 459.64")
 
         fig.colorbar(x)
+        plt.title(f"{self._night}-{self}")
         plt.show()
 
     def is_valid_file_name(self):
