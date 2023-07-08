@@ -58,7 +58,7 @@ class AlignedCombined:
         ax.grid(which="minor", alpha=0.2)
         ax.grid(which="major", alpha=0)
 
-        x = ax.imshow(self.data, cmap="gray", norm=LogNorm())
+        x = ax.imshow(self.data, cmap="gray", norm=LogNorm(), origin="lower")
 
         # Plot Star 1 just for reference
         ax.scatter([746.58], [459.64], color="r")
