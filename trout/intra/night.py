@@ -178,11 +178,13 @@ class Night:
                 for index, i in enumerate(s["Cluster_Angle"].index)
             ]  # noqa
             # Add DateOnly column
-            s.Date = pd.to_datetime(s["Date"], format="%Y-%m-%d %H:%M:%S")
+            s.Date = pd.to_datetime(s["Date"], format="%Y-%m-%dT%H:%M:%S")
             s["DateOnly"] = s["Date"].apply(lambda x: x.date())
             # We started taking data on the night of self.night_date,
             # We want to get the sunrise of the next day since that's what we'll run into
-            s["Sunrise"] = get_next_astonomical_sunrise(self.night_date + timedelta(days=1))
+            s["Sunrise"] = get_next_astonomical_sunrise(
+                self.night_date + timedelta(days=1)
+            )
             # We want to get the sunset of the dawn we start taking data
             s["Sunset"] = get_next_astonomical_sunset(self.night_date)
             self._sky_bg = s
