@@ -8,7 +8,7 @@ from trout.bg import get_next_astonomical_sunrise, get_next_astonomical_sunset
 from trout.intra.aligned_combined import AlignedCombined
 from trout.intra.flux_log_combined import FluxLogCombined
 from trout.intra.logfile_combined import LogFileCombined
-from trout.moon import phase, position
+from trout.moon import moon_distance, phase, position
 from trout.nights import bad_nights
 
 
@@ -179,6 +179,9 @@ class Night:
             ]  # noqa
             # Add DateOnly column
             s.Date = pd.to_datetime(s["Date"], format="%Y-%m-%dT%H:%M:%S")
+            # Since we've found a bug in the data processing code for moon distance calculation
+            # we recalculate moon distance. This is temporary until data is reprocessed
+            s["Moon_Distance"] = list(map(moon_distance, s.Date))
             s["DateOnly"] = s["Date"].apply(lambda x: x.date())
             # We started taking data on the night of self.night_date,
             # We want to get the sunrise of the next day since that's what we'll run into
@@ -187,14 +190,19 @@ class Night:
             )
             # We want to get the sunset of the dawn we start taking data
             s["Sunset"] = get_next_astonomical_sunset(
-                    datetime(
-                        year=self.night_date.year,
-                        month=self.night_date.month,
-                        day=self.night_date.day,
-                        hour=10 # By providing hour, we make sure that we don't get sunset from previous day
-                    )
+                datetime(
+                    year=self.night_date.year,
+                    month=self.night_date.month,
+                    day=self.night_date.day,
+                    hour=10,  # By providing hour, to ensure we don't get sunset from previous day
+                )
             )
-            columns = list(s.columns[:1]) + list(s.columns[-4:]) + list(s.columns[1:32]) + list(s.columns[32:-4])
+            columns = (
+                list(s.columns[:1])
+                + list(s.columns[-4:])
+                + list(s.columns[1:32])
+                + list(s.columns[32:-4])
+            )
             s = s[columns]
             self._sky_bg = s
         return self._sky_bg

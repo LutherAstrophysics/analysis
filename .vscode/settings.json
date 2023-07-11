@@ -10,6 +10,7 @@
   "python.linting.enabled": true,
   "cSpell.words": [
     "arange",
+    "arccos",
     "astonomical",
     "astropy",
     "autofmt",
