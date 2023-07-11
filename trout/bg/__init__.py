@@ -100,7 +100,7 @@ def get_next_astonomical_sunrise(date_of_observation: Union[datetime, date]) -> 
     decorah_observer.horizon = "-18"  # Astronomical twilight
 
     to_return = decorah_observer.next_rising(ephem.Sun(), use_center=True)
-    return datetime.strptime(to_return, "%Y/%m/%d HH:MM:SS")
+    return datetime.strptime(str(to_return), "%Y/%m/%d HH:MM:SS")
 
 
 def get_next_astonomical_sunset(date_of_observation: Union[datetime, date]) -> datetime:
@@ -109,4 +109,4 @@ def get_next_astonomical_sunset(date_of_observation: Union[datetime, date]) -> d
     decorah_observer.horizon = "-18"  # Astronomical twilight
 
     to_return = decorah_observer.next_setting(ephem.Sun(), use_center=True)
-    return datetime.strptime(to_return, "%Y/%m/%d HH:MM:SS")
+    return datetime.strptime(str(to_return), "%Y/%m/%d HH:MM:SS")
