@@ -1,9 +1,10 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from functools import total_ordering
 from typing import Iterable, Union
 
 import pandas as pd
 
+from trout.bg import get_astonomical_sunrise
 from trout.intra.aligned_combined import AlignedCombined
 from trout.intra.flux_log_combined import FluxLogCombined
 from trout.intra.logfile_combined import LogFileCombined
@@ -117,16 +118,17 @@ class Night:
         all=False,
         cluster_angles_round=Union[int, Iterable[int]],
         angle_status=None,
-        group_by="median",
+        group_by=None,
         twilight_removed=True,
         columns=None
     ):
+        """
+        Return dataframe filtered by the the provided parameters. When
+        parameters are unspecified, the entire dataset is returned
+        """
         df = self.sky_bg
-        if not all or columns:
-            if not columns:
-                # Trim out extra cols
-                columns = df.columns[:33]
-            df = df[columns]
+        if twilight_removed:
+            df = df[(df["Date"] > date["Sunset"]) & (df["Date"] < date["Sunrise"])]
         if cluster_angles_round:
             if type(cluster_angles_round) is int:
                 cluster_angles_round = [cluster_angles_round]
@@ -137,11 +139,12 @@ class Night:
             df = df.median()
         elif group_by == "mean":
             df = df.mean()
-        # Add DateOnly column
-        df.Date = pd.to_datetime(df["Date"], format="%Y-%m-%d %H:%M:%S")
-        # df["DateOnly"] = df
-        if twilight_removed:
-            pass
+        if not all or columns:
+            if not columns:
+                # Trim out extra cols
+                columns = df.columns[:33]
+            df = df[columns]
+        return df
 
     @property
     def stats(self):
@@ -174,6 +177,14 @@ class Night:
                 else "DEC"
                 for index, i in enumerate(s["Cluster_Angle"].index)
             ]  # noqa
+            # Add DateOnly column
+            s.Date = pd.to_datetime(s["Date"], format="%Y-%m-%d %H:%M:%S")
+            s["DateOnly"] = s["Date"].apply(lambda x: x.date())
+            # We started taking data on the night of self.night_date,
+            # We want to get the sunrise of the next day since that's what we'll run into
+            s["Sunrise"] = get_astonomical_sunrise(self.night_date + timedelta(days=1))
+            # We want to get the sunset of the dawn we start taking data
+            s["Sunset"] = get_astonomical_sunrise(self.night_date)
             self._sky_bg = s
         return self._sky_bg
 
