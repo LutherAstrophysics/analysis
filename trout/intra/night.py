@@ -4,7 +4,7 @@ from typing import Iterable, Union
 
 import pandas as pd
 
-from trout.bg import get_astonomical_sunrise
+from trout.bg import get_next_astonomical_sunrise, get_next_astonomical_sunset
 from trout.intra.aligned_combined import AlignedCombined
 from trout.intra.flux_log_combined import FluxLogCombined
 from trout.intra.logfile_combined import LogFileCombined
@@ -120,7 +120,7 @@ class Night:
         angle_status=None,
         group_by=None,
         twilight_removed=True,
-        columns=None
+        columns=None,
     ):
         """
         Return dataframe filtered by the the provided parameters. When
@@ -182,9 +182,9 @@ class Night:
             s["DateOnly"] = s["Date"].apply(lambda x: x.date())
             # We started taking data on the night of self.night_date,
             # We want to get the sunrise of the next day since that's what we'll run into
-            s["Sunrise"] = get_astonomical_sunrise(self.night_date + timedelta(days=1))
+            s["Sunrise"] = get_next_astonomical_sunrise(self.night_date + timedelta(days=1))
             # We want to get the sunset of the dawn we start taking data
-            s["Sunset"] = get_astonomical_sunrise(self.night_date)
+            s["Sunset"] = get_next_astonomical_sunset(self.night_date)
             self._sky_bg = s
         return self._sky_bg
 
