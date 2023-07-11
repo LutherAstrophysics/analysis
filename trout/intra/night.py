@@ -134,7 +134,7 @@ class Night:
                 cluster_angles_round = [cluster_angles_round]
             df = df[df["Cluster_Angle_Round"].isin(cluster_angles_round)]
         if angle_status:
-            df = df[df["Angle_status"] == "angle_status"]
+            df = df[df["Angle_status"] == angle_status]
         if group_by == "median":
             df = df.median()
         elif group_by == "mean":
