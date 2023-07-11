@@ -123,10 +123,10 @@ class Night:
     ):
         df = self.sky_bg
         if not all or columns:
-            if columns:
+            if not columns:
                 # Trim out extra cols
-                cols = df.columns[:33]
-            df = df[cols[:33]]
+                columns = df.columns[:33]
+            df = df[columns]
         if cluster_angles_round:
             if type(cluster_angles_round) is int:
                 cluster_angles_round = [cluster_angles_round]
@@ -163,6 +163,7 @@ class Night:
             candidate = candidates[0]
             s = pd.read_csv(candidate, delim_whitespace=True)
             s.index = s["Image_number"]
+            s.index.name = "Img"
             # Add columns for twilight
             # Add column for whether the cluster angle is increasing or decreasing
             s["Angle_status"] = [
