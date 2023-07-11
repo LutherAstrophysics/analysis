@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from functools import total_ordering
+from typing import Iterable, Union
 
 import pandas as pd
 
@@ -65,11 +66,13 @@ class Night:
         Checks whether the night is a bad night
         """
         try:
-            _, bad_nights_for_year = zip(*bad_nights(year=self.night_date.year, is_primary=False))
+            _, bad_nights_for_year = zip(
+                *bad_nights(year=self.night_date.year, is_primary=False)
+            )
         except ValueError:  # For when the list of bad nights is empty
             bad_nights_for_year = []
         return self.night_date in bad_nights_for_year
-    
+
     def has_color_normalized_folder(self):
         """
         Returns whether the night has color normalized folder Nights that didn't
@@ -109,6 +112,37 @@ class Night:
             )  # C-engine doesn't support regex delimiter
         return self._color_normalized[radius]
 
+    def get_sky_bg_refined(
+        self,
+        all=False,
+        cluster_angles_round=Union[int, Iterable[int]],
+        angle_status=None,
+        group_by="median",
+        twilight_removed=True,
+        columns=None
+    ):
+        df = self.sky_bg
+        if not all or columns:
+            if columns:
+                # Trim out extra cols
+                cols = df.columns[:33]
+            df = df[cols[:33]]
+        if cluster_angles_round:
+            if type(cluster_angles_round) is int:
+                cluster_angles_round = [cluster_angles_round]
+                df = df[df["Cluster_Angle_Round"].isin(cluster_angles_round)]
+        if angle_status:
+            df = df[df["Angle_status"] == "angle_status"]
+        if group_by == "median":
+            df = df.median()
+        elif group_by == "mean":
+            df = df.mean()
+        # Add DateOnly column
+        df.Date = pd.to_datetime(df["Date"], format="%Y-%m-%d %H:%M:%S")
+        # df["DateOnly"] = df
+        if twilight_removed:
+            pass
+
     @property
     def stats(self):
         return {
@@ -127,7 +161,19 @@ class Night:
             elif len(candidates) > 1:
                 raise Exception("Multiple candidates found")
             candidate = candidates[0]
-            self._sky_bg = pd.read_csv(candidate, delim_whitespace=True)
+            s = pd.read_csv(candidate, delim_whitespace=True)
+            s.index = s["Image_number"]
+            # Add columns for twilight
+            # Add column for whether the cluster angle is increasing or decreasing
+            s["Angle_status"] = [
+                ""
+                if index == 0
+                else "INC"
+                if s["Cluster_Angle"][i - 1] < s["Cluster_Angle"][i]
+                else "DEC"
+                for index, i in enumerate(s["Cluster_Angle"].index)
+            ]  # noqa
+            self._sky_bg = s
         return self._sky_bg
 
     @property

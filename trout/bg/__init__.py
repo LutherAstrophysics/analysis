@@ -1,5 +1,9 @@
 import re
+from datetime import date, datetime
+from functools import cache
+from typing import Union
 
+import ephem
 import pandas as pd
 
 
@@ -77,3 +81,32 @@ class SkyNew:
             return pd.read_csv(url, usecols=lambda x: not x.split("_")[0].isdigit())
         else:
             return pd.read_csv(url)
+
+
+@cache
+def get_ephem_decorah_observer():
+    decorah = ephem.Observer()
+
+    decorah.lat = "43.3017"
+    decorah.lon = "-91.79"
+
+    decorah.elevation = 268
+    return decorah
+
+
+def get_astonomical_sunrise(date_of_observation: Union[datetime, date]) -> datetime:
+    decorah_observer = get_ephem_decorah_observer()
+    decorah_observer.date = date_of_observation.strftime("%Y-%m-%d")
+    decorah_observer.horizon = "-18"  # Astronomical twilight
+
+    to_return = decorah_observer.previous_rising(ephem.Sun(), use_center=True)
+    return datetime.strptime(to_return, "%Y/%m/%d HH:MM:SS")
+
+
+def get_astonomical_sunset(date_of_observation: Union[datetime, date]) -> datetime:
+    decorah_observer = get_ephem_decorah_observer()
+    decorah_observer.date = date_of_observation.strftime("%Y-%m-%d")
+    decorah_observer.horizon = "-18"  # Astronomical twilight
+
+    to_return = decorah_observer.next_setting(ephem.Sun(), use_center=True)
+    return datetime.strptime(to_return, "%Y/%m/%d HH:MM:SS")
