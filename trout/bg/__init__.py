@@ -96,17 +96,17 @@ def get_ephem_decorah_observer():
 
 def get_next_astonomical_sunrise(date_of_observation: Union[datetime, date]) -> datetime:
     decorah_observer = get_ephem_decorah_observer()
-    decorah_observer.date = date_of_observation.strftime("%Y-%m-%d")
+    decorah_observer.date = date_of_observation.strftime("%Y-%m-%d %H:%M:%S")
     decorah_observer.horizon = "-18"  # Astronomical twilight
 
     to_return = decorah_observer.next_rising(ephem.Sun(), use_center=True)
-    return datetime.strptime(str(to_return), "%Y/%m/%d HH:MM:SS")
+    return datetime.strptime(str(to_return), "%Y/%m/%d %H:%M:%S")
 
 
 def get_next_astonomical_sunset(date_of_observation: Union[datetime, date]) -> datetime:
     decorah_observer = get_ephem_decorah_observer()
-    decorah_observer.date = date_of_observation.strftime("%Y-%m-%d")
+    decorah_observer.date = date_of_observation.strftime("%Y-%m-%d %H:%M:%S")
     decorah_observer.horizon = "-18"  # Astronomical twilight
 
     to_return = decorah_observer.next_setting(ephem.Sun(), use_center=True)
-    return datetime.strptime(str(to_return), "%Y/%m/%d HH:MM:SS")
+    return datetime.strptime(str(to_return), "%Y/%m/%d %H:%M:%S")

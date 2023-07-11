@@ -128,11 +128,11 @@ class Night:
         """
         df = self.sky_bg
         if twilight_removed:
-            df = df[(df["Date"] > date["Sunset"]) & (df["Date"] < date["Sunrise"])]
+            df = df[(df["Date"] > df["Sunset"]) & (df["Date"] < df["Sunrise"])]
         if cluster_angles_round:
             if type(cluster_angles_round) is int:
                 cluster_angles_round = [cluster_angles_round]
-                df = df[df["Cluster_Angle_Round"].isin(cluster_angles_round)]
+            df = df[df["Cluster_Angle_Round"].isin(cluster_angles_round)]
         if angle_status:
             df = df[df["Angle_status"] == "angle_status"]
         if group_by == "median":
@@ -186,7 +186,16 @@ class Night:
                 self.night_date + timedelta(days=1)
             )
             # We want to get the sunset of the dawn we start taking data
-            s["Sunset"] = get_next_astonomical_sunset(self.night_date)
+            s["Sunset"] = get_next_astonomical_sunset(
+                    datetime(
+                        year=self.night_date.year,
+                        month=self.night_date.month,
+                        day=self.night_date.day,
+                        hour=10 # By providing hour, we make sure that we don't get sunset from previous day
+                    )
+            )
+            columns = list(s.columns[:1]) + list(s.columns[-4:]) + list(s.columns[1:32]) + list(s.columns[32:-4])
+            s = s[columns]
             self._sky_bg = s
         return self._sky_bg
 
