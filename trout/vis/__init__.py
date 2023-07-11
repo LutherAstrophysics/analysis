@@ -6,6 +6,7 @@ from typing import Callable, List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
+from astropy.visualization import ImageNormalize, MinMaxInterval, SqrtStretch
 
 from trout.files.reference_log_file import ReferenceLogFile
 from trout.internight import bands as get_bands
@@ -15,6 +16,48 @@ from trout.stars import STAR_END, STAR_START, Star, get_star
 # Types
 StarNumberType = int
 StepType = float
+
+
+def show_box_around(
+    img_data,
+    center,
+    radius,
+    title,
+    ax,
+    vmin=None,
+    vmax=None,
+    label_center=True,
+    grid=True,
+):  # noqa
+    """
+    Show a box around an image data of provided size
+    """
+    # Here we're assuming that x is column and y is row
+    center_x, center_y = center
+    start_row = int(center_y - radius)
+    end_row = int(center_y + radius)
+    start_col = int(center_x - radius)
+    end_col = int(center_x + radius)
+    data = img_data[start_row:end_row, start_col:end_col]
+
+    if not vmin or not vmax:
+        interval = MinMaxInterval()
+        vmin, vmax = interval.get_limits(data)
+    # Create an ImageNormalize object using a SqrtStretch object
+    norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=SqrtStretch())
+
+    ax.imshow(img_data, cmap="gray", origin="lower", norm=norm)
+    ax.set_xlim(start_col, end_col)
+    ax.set_ylim(start_row, end_row)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_title(title)
+
+    if label_center:
+        ax.plot([center_x], [center_y], "ro")
+    if grid:
+        ax.grid()
+    return ax
 
 
 def field():

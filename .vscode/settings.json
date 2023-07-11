@@ -36,11 +36,16 @@
     "renorm",
     "savetxt",
     "skiprows",
+    "usecols",
+    "vmax",
+    "vmin",
     "xaxis",
     "xlabel",
+    "xlim",
     "xticks",
     "yaxis",
     "ylabel",
+    "ylim",
     "yticks"
   ]
 }
