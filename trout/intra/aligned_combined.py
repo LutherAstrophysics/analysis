@@ -7,6 +7,8 @@ import numpy as np
 from astropy.io.fits import getdata
 from matplotlib.colors import LogNorm
 
+from trout.vis import show_box_around
+
 
 @total_ordering
 class AlignedCombined:
@@ -45,7 +47,7 @@ class AlignedCombined:
         self._path = candidate
         self._data = None
 
-    def plot(self):
+    def plot(self, label=(746.58, 459.64), zoom_at_center=None, radius=10):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
 
@@ -58,15 +60,23 @@ class AlignedCombined:
         ax.grid(which="minor", alpha=0.2)
         ax.grid(which="major", alpha=0)
 
-        x = ax.imshow(self.data, cmap="gray", norm=LogNorm(), origin="lower")
+        if zoom_at_center:
+            show_box_around(
+                self.data, zoom_at_center, radius, f"{self} - {zoom_at_center}", ax
+            )
+            plt.show()
+        else:
+            x = ax.imshow(self.data, cmap="gray", norm=LogNorm(), origin="lower")
 
-        # Plot Star 1 just for reference
-        ax.scatter([746.58], [459.64], color="r")
-        ax.text(700, 459, "#1: 746.58, 459.64")
+            # Plot star at given label for reference
+            if label:
+                ax.scatter([label[0]], [label[1]], color="r")
+                if label == (746.58, 459.64):
+                    ax.text(700, 459, "#1: 746.58, 459.64")
 
-        fig.colorbar(x)
-        plt.title(f"{self}")
-        plt.show()
+            fig.colorbar(x)
+            plt.title(f"{self}")
+            plt.show()
 
     def is_valid_file_name(self):
         return bool(self.file_name_re.match(self.path.name))
