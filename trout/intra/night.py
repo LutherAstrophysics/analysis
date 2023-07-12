@@ -116,7 +116,7 @@ class Night:
     def get_sky_bg_refined(
         self,
         all=False,
-        cluster_angles_round=Union[int, Iterable[int]],
+        cluster_angles_round: Union[int, Iterable[int]] = None,
         angle_status=None,
         group_by=None,
         twilight_removed=True,
