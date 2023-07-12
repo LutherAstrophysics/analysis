@@ -47,7 +47,9 @@ class AlignedCombined:
         self._path = candidate
         self._data = None
 
-    def plot(self, label=(746.58, 459.64), zoom_at_center=None, radius=10):
+    def plot(
+        self, label=(746.58, 459.64), zoom_at_center=None, radius=10, label_center=True
+    ):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
 
@@ -62,7 +64,12 @@ class AlignedCombined:
 
         if zoom_at_center:
             show_box_around(
-                self.data, zoom_at_center, radius, f"{self} - {zoom_at_center}", ax
+                self.data,
+                zoom_at_center,
+                radius,
+                f"{self} - {zoom_at_center}",
+                ax,
+                label_center=label_center,
             )
             plt.show()
         else:
