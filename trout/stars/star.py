@@ -417,7 +417,7 @@ class Star:
         returns: Ordered list of neighbors and the
                 distance between their centers
         """
-        f = ReferenceLogFile.get_ref_revised_71()
+        f = ReferenceLogFile.get_ref_with_new_stars()
 
         star_xy = f.get_star_xy(self.number)
         x, y = star_xy[0], star_xy[1]
