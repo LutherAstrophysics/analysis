@@ -2,7 +2,7 @@ from trout.database import query
 from trout.nights import bad_nights
 
 STAR_START = 1
-STAR_END = 2510
+STAR_END = 3745
 
 
 def is_valid_star(star_number: int):

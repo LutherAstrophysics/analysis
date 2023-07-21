@@ -36,6 +36,19 @@ class ReferenceLogFile:
             cls.ref_revised_71 = ReferenceLogFile(file_path)
         return cls.ref_revised_71
 
+    @classmethod
+    def get_ref_with_new_stars(cls):
+        """
+        Returns the ReferenceLogFile with new stars
+        file
+        """
+        if not cls.ref_revised_71:
+            file_path = pkg_resources.resource_filename(
+                "trout", "data/ref_with_new_stars.txt"
+            )
+            cls.ref_revised_71 = ReferenceLogFile(file_path)
+        return cls.ref_revised_71
+
     def __init__(self, file_path: str) -> None:
         self.__path = Path(file_path)
         self.__is_read = False
